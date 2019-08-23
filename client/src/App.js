@@ -22,40 +22,28 @@ const styles= theme =>({
 })
 
 
-const customers = [
-  {
-  'id' : 1,
-  'image' : 'https://placeimg.com/64/64/1',
-  'name' : '기환',
-  'birthday' : '920209',
-  'gender' : '남',
-  'job' : '프론트개발자',
-  },
-  {
-  'id' : 2,
-  'image' : 'https://placeimg.com/64/64/2',
-  'name' : '홍길동',
-  'birthday' : '920209',
-  'gender' : '남',
-  'job' : '프론트개발자',
-  },
-  {
-  'id' : 3,
-  'image' : 'https://placeimg.com/64/64/3',
-  'name' : '홍길동',
-  'birthday' : '920209',
-  'gender' : '남',
-  'job' : '프론트개발자',
-  },
-]
 
+class App extends React.Component{
+  state = {
+    customers: ""
+  }
+  componentDidMount() {
+    this.callApi()
+      .then(res =>this.setState({customers: res}))
+  }
 
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
 
+    return body 
+  }
 
-function App() {
+  render() {
+  const {classes} = this.props;
   return (
-    <Paper >
-    <Table >
+    <Paper className={classes.root}>
+    <Table className={classes.table}>
       <TableHead>
         <TableCell>번호</TableCell>
         <TableCell>이미지</TableCell>
@@ -64,9 +52,8 @@ function App() {
         <TableCell>성별</TableCell>
         <TableCell>직업</TableCell>
       </TableHead>
-      <TableBody>
-          {
-          customers.map(c => {
+      <TableBody>{
+          this.state.customers ? this.state.customers.map(c => {
             return (
               <Customer
                 key={c.id}
@@ -79,12 +66,13 @@ function App() {
               />
             )
           })
-          }
-      </TableBody>
+          : ""
+          }</TableBody>
     </Table>
     
     </Paper>
   );
+        }
 }
 
 export default withStyles(styles)(App);
