@@ -1,4 +1,5 @@
 import React from 'react';
+import CustomerAdd from './components/CustomerAdd'
 import logo from './logo.svg';
 import './App.css';
 import Customer from './components/Customer'
@@ -23,6 +24,9 @@ const styles= theme =>({
   },
   progress: {
     margin: theme.spacing.unit *2
+  },
+  td: {
+    maxWidth: 64
   }
 })
 
@@ -30,10 +34,24 @@ const styles= theme =>({
 
 
 class App extends React.Component{
-  state = {
-    customers: "",
-    completed: 0
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      customers: "",
+      completed: 0
+    }
   }
+  
+  stateRefresh = () => {
+    this.state = {
+      customers: "",
+      completed: 0
+    }
+    this.callApi()
+      .then(res =>this.setState({customers: res}))
+  }
+
   componentDidMount() {
     this.timer = setInterval(this.progress, 20)
     this.callApi()
@@ -65,11 +83,13 @@ class App extends React.Component{
         <TableCell>생일</TableCell>
         <TableCell>성별</TableCell>
         <TableCell>직업</TableCell>
+        <TableCell>설정</TableCell>
       </TableHead>
       <TableBody>{
           this.state.customers ? this.state.customers.map(c => {
             return (
               <Customer
+                stateRefresh={this.stateRefresh}
                 key={c.id}
                 id={c.id}
                 image={c.image}
@@ -88,8 +108,10 @@ class App extends React.Component{
           </TableRow>
           }</TableBody>
     </Table>
+    <CustomerAdd stateRefresh={this.stateRefresh}/>
     
     </Paper>
+    
   );
 }
 }
