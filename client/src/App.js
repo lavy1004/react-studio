@@ -77,13 +77,15 @@ class App extends React.Component{
     <Paper className={classes.root}>
     <Table className={classes.table}>
       <TableHead>
-        <TableCell>번호</TableCell>
-        <TableCell>이미지</TableCell>
-        <TableCell>이름</TableCell>
-        <TableCell>생일</TableCell>
-        <TableCell>성별</TableCell>
-        <TableCell>직업</TableCell>
-        <TableCell>설정</TableCell>
+        <TableRow>
+          <TableCell>번호</TableCell>
+          <TableCell>이미지</TableCell>
+          <TableCell>이름</TableCell>
+          <TableCell>생일</TableCell>
+          <TableCell>성별</TableCell>
+          <TableCell>직업</TableCell>
+          <TableCell>설정</TableCell>
+        </TableRow>
       </TableHead>
       <TableBody>{
           this.state.customers ? this.state.customers.map(c => {
