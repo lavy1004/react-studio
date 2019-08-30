@@ -29,7 +29,8 @@ class CustomerAdd extends React.Component {
             userName: '',
             birthday: '',
             gender: '',
-            job: '',
+            phone: '',
+            email: '',
             fileName: '',
             open: false
         }
@@ -49,7 +50,8 @@ class CustomerAdd extends React.Component {
             userName: '',
             birthday: '',
             gender: '',
-            job: '',
+            phone: '',
+            email: '',
             fileName: '',
             open: false
         })
@@ -73,7 +75,8 @@ class CustomerAdd extends React.Component {
         formData.append('name', this.state.userName)
         formData.append('birthday', this.state.birthday)
         formData.append('gender', this.state.gender)
-        formData.append('job', this.state.job)
+        formData.append('phone', this.state.phone)
+        formData.append('email', this.state.email)
 
         const config = {
             headers: {
@@ -95,7 +98,8 @@ class CustomerAdd extends React.Component {
             userName: '',
             birthday: '',
             gender: '',
-            job: '',
+            phone: '',
+            email: '',
             fileName: '',
             open: false
         })
@@ -121,7 +125,8 @@ class CustomerAdd extends React.Component {
                         <TextField className={classes.wid100} label="이름" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="생년월일" type="text" name="birthday" value={this.state.birthday}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="성별" type="text" name="gender" value={this.state.gender}  onChange={this.handleValueChange}/>
-                        <TextField className={classes.wid100} label="직업" type="text" name="job" value={this.state.job}  onChange={this.handleValueChange}/>
+                        <TextField className={classes.wid100} label="전화번호" type="text" name="phone" value={this.state.phone}  onChange={this.handleValueChange}/>
+                        <TextField className={classes.wid100} label="이메일" type="text" name="email" value={this.state.email}  onChange={this.handleValueChange}/>
                     </DialogContent>
                     <DialogActions>
                         <Button variant="contained" color="primary" onClick={this.handleFormSubmit}>추가</Button>

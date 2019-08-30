@@ -24,7 +24,8 @@ class Customer extends React.Component{
                 <TableCell>{this.props.name}</TableCell>
                 <TableCell>{this.props.birthday}</TableCell>
                 <TableCell>{this.props.gender}</TableCell>
-                <TableCell>{this.props.job}</TableCell>
+                <TableCell>{this.props.phone}</TableCell>
+                <TableCell>{this.props.email}</TableCell>
                 <TableCell> <CustomerDelete stateRefresh={this.props.stateRefresh} id={this.props.id} /></TableCell>
             </TableRow>
         )

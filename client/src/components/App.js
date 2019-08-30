@@ -1,7 +1,6 @@
 import React from 'react';
-import CustomerAdd from './components/CustomerAdd'
-import './App.css';
-import Customer from './components/Customer'
+import CustomerAdd from './CustomerAdd'
+import Customer from './Customer'
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -23,6 +22,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+
+import { Link } from 'react-router-dom'
 
 const styles= theme =>({
   root: {
@@ -166,12 +167,12 @@ class App extends React.Component{
         return c.name.indexOf(this.state.searchKeyword) > -1;
       })
       return data.map((c)=>{
-        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender={c.gender} job={c.job}/>
+        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender={c.gender} phone={c.phone} email={c.email}/>
       })
     }
 
   const {classes} = this.props;
-  const cellList = ["번호","이미지","이름","생년월일","성별","직업","설정"]
+  const cellList = ["번호","이미지","성명","생년월일","성별","전화번호","이메일","설정"]
   return (
     <div className={classes.root}>
        <AppBar position="static">
@@ -206,12 +207,12 @@ class App extends React.Component{
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              <Badge  color="secondary">
                 <MailIcon />
               </Badge>
             </IconButton>
             <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
+              <Badge  color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
