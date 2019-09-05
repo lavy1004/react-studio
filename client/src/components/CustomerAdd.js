@@ -54,11 +54,24 @@ class CustomerAdd extends React.Component {
 
     handleFormSubmit = (e) => {
         e.preventDefault()
+        // const Dialog({ type, ...rest }) => {
+        //     switch(type) {
+        //         case 'share':
+        //             return <ShareDialog {...rest} />;
+        //         case 'edit':
+        //             return <EditDialog {...rest} />;
+        //         case 'delete':
+        //             return <DeleteDialog {...rest} />;
+        //         default:
+        //             return null;
+        //     }
+        // };
+
         this.addCustomer()
-            .then((response) => {
-                console.log(response.data)
-            this.props.stateRefresh();
-            })
+        .then((response) => {
+            console.log(response.data)
+        this.props.stateRefresh();
+        })
         this.setState({
             file: null,
             userName: '',
@@ -106,7 +119,18 @@ class CustomerAdd extends React.Component {
         formData.append('price', this.state.price)
         formData.append('payment', this.state.payment)
         formData.append('admin_id', this.state.admin_id)
-        console.log(formData)
+        console.log(this.state.file)
+
+        // if( this.state.file === '') {
+        //     console.log(this.state.file)
+        //     return  
+        // } else {
+        //     console.log(this.state.file)
+        //     return  
+        // }
+        
+    
+    
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -115,13 +139,20 @@ class CustomerAdd extends React.Component {
         return post(url, formData, config)
     }
 
+
     handleClickOpen = () => { // binding 해주어야함 handleClickOpen() {} 이거 안되
-        const data = sessionStorage.getItem('id');
         
-        this.setState({
-            admin_id: data,
-            open: true
-        })
+        if(sessionStorage.getItem('id') === null) {
+            alert('로그인 후 이용해주세요')
+        } else {
+            const data = sessionStorage.getItem('id');
+        
+            this.setState({
+                admin_id: data,
+                open: true
+            })
+        }
+        
 
     }
      handleChange = (event) => {

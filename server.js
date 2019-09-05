@@ -33,7 +33,6 @@ app.get('/api/customers/:id', (req, res) =>{
         sql,
         params,
         (err, rows, fields) => {
-            console.log(rows)
             res.send(rows);
         }
     )
@@ -43,7 +42,7 @@ app.use('/image', express.static('./upload'));
 //의문점 여기서 서버는 분명 5000port 인데 왜 3000port로 주고 받는건지.. 
 app.post('/api/customers', upload.single('image'), (req, res)=>{
     let sql = `INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, now(), 0)`;
-    let image ='/image/' + req.file.filename;
+    let image = req.body.image === 'null'? '/image/default.jpg' : '/image/' + req.file.filename ; // null 이 문자열로 넘어오네.. 이거때매 안됫었네
     let name = req.body.name;
     let birthday = req.body.birthday;
     let phone = req.body.phone;
