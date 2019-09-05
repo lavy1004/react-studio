@@ -23,9 +23,10 @@ class Customer extends React.Component{
                 <TableCell ><img className={classes.Max} src={this.props.image}/></TableCell>
                 <TableCell>{this.props.name}</TableCell>
                 <TableCell>{this.props.birthday}</TableCell>
-                <TableCell>{this.props.gender}</TableCell>
                 <TableCell>{this.props.phone}</TableCell>
                 <TableCell>{this.props.email}</TableCell>
+                <TableCell>{this.props.price}</TableCell>
+                <TableCell>{this.props.payment}</TableCell>
                 <TableCell> <CustomerDelete stateRefresh={this.props.stateRefresh} id={this.props.id} /></TableCell>
             </TableRow>
         )

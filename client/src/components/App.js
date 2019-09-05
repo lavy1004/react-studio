@@ -140,11 +140,14 @@ class App extends React.Component{
     this.timer = setInterval(this.progress, 20)
     this.callApi()
       .then(res =>this.setState({customers: res}))
+
   }
 
   //함수표현식인데
   callApi = async () => {
-    const response = await fetch('/api/customers');
+    const data = await sessionStorage.getItem('id');
+    console.log(data)
+    const response = await fetch(`/api/customers/${data}`);
     const body = await response.json();
 
     return body 
@@ -167,12 +170,12 @@ class App extends React.Component{
         return c.name.indexOf(this.state.searchKeyword) > -1;
       })
       return data.map((c)=>{
-        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender={c.gender} phone={c.phone} email={c.email}/>
+        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} phone={c.phone} price={c.price} payment={c.payment} email={c.email}/>
       })
     }
 
   const {classes} = this.props;
-  const cellList = ["번호","이미지","성명","생년월일","성별","전화번호","이메일","설정"]
+  const cellList = ["번호","이미지","성명","생년월일","전화번호","이메일","금액","결제수단","설정"]
   return (
     <div className={classes.root}>
        <AppBar position="static">
@@ -205,39 +208,7 @@ class App extends React.Component{
             />
           </div>
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge  color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge  color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              // aria-controls={menuId}
-              aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              // aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              // onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+          
         </Toolbar>
       </AppBar>
       <div className={classes.menu}>

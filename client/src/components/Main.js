@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
+import Counter from './Counter'
 
 const API_KEY = 'd144a6a3d319cebf69f1478e5e0c7ab5';
 

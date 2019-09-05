@@ -4,7 +4,7 @@ class About extends React.Component{
     render() {
         return (
             <div>
-                안녕하세요22222222222
+                
             </div>
         )
     }

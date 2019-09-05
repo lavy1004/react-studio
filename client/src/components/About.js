@@ -5,7 +5,7 @@ class About extends React.Component{
     render() {
         return (
             <div>
-               123123123123123
+               안녕하세요 studio lala 관리자페이지입니다
             </div>
         )
     }

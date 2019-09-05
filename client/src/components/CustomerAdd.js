@@ -7,6 +7,11 @@ import DialogContent from '@material-ui/core/DialogContent'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import {withStyles} from '@material-ui/core/Styles'
+import { green } from '@material-ui/core/colors';
+import Radio from '@material-ui/core/Radio';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+
 
 
 const styles = theme => ({
@@ -15,11 +20,17 @@ const styles = theme => ({
     },
     wid100: {
         width: 100 + '%'
-    }
+    },
+    root: {
+    color: green[400],
+        '&$checked': {
+            color: green[600],
+        },
+    },
+    checked: {},
 })
 
 class CustomerAdd extends React.Component {
-    
     
     constructor(props) {
         super(props);
@@ -28,9 +39,12 @@ class CustomerAdd extends React.Component {
             file: null,
             userName: '',
             birthday: '',
-            gender: '',
+            
             phone: '',
             email: '',
+            price: '',
+            payment: '',
+            admin_id: '',
             fileName: '',
             open: false
         }
@@ -49,9 +63,12 @@ class CustomerAdd extends React.Component {
             file: null,
             userName: '',
             birthday: '',
-            gender: '',
+            
             phone: '',
             email: '',
+            price: '',
+            payment: '',
+            admin_id: '',
             fileName: '',
             open: false
         })
@@ -68,16 +85,28 @@ class CustomerAdd extends React.Component {
         this.setState(nextState)
     }
 
+    handleValueChangeRdo = (e) =>{
+        let nextState = {};
+        console.log(e.target.value)
+        nextState[e.target.name] = e.target.value;
+        this.setState(nextState)
+    }
+
+
     addCustomer = () =>{
         const url ='/api/customers';
         const formData = new FormData();
+
         formData.append('image', this.state.file)
         formData.append('name', this.state.userName)
         formData.append('birthday', this.state.birthday)
-        formData.append('gender', this.state.gender)
+        
         formData.append('phone', this.state.phone)
         formData.append('email', this.state.email)
-
+        formData.append('price', this.state.price)
+        formData.append('payment', this.state.payment)
+        formData.append('admin_id', this.state.admin_id)
+        console.log(formData)
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -87,22 +116,43 @@ class CustomerAdd extends React.Component {
     }
 
     handleClickOpen = () => { // binding 해주어야함 handleClickOpen() {} 이거 안되
+        const data = sessionStorage.getItem('id');
+        
         this.setState({
+            admin_id: data,
             open: true
         })
+
     }
+     handleChange = (event) => {
+        this.setState({
+            payment:event.target.value
+        });
+      }
+    
 
     handleClose = () => {
         this.setState({
             file: null,
             userName: '',
             birthday: '',
-            gender: '',
+            
             phone: '',
             email: '',
+            price: '',
+            payment: '',
+            admin_id: '',
             fileName: '',
             open: false
         })
+    }
+
+    componentDidMount() {
+        const data = sessionStorage.getItem('id');
+        this.setState({
+            admin_id : data
+        })
+        console.log(data)
     }
 
     render () { //classes 이거 왜 render 안에서하는거지
@@ -122,11 +172,42 @@ class CustomerAdd extends React.Component {
                                 {this.state.fileName === "" ? "프로필이미지선택" : this.state.fileName}
                             </Button>
                         </label>
+                        <input className={classes.hidden} id="admin_id" type='text' value={this.state.admin_id} />
                         <TextField className={classes.wid100} label="이름" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="생년월일" type="text" name="birthday" value={this.state.birthday}  onChange={this.handleValueChange}/>
-                        <TextField className={classes.wid100} label="성별" type="text" name="gender" value={this.state.gender}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="전화번호" type="text" name="phone" value={this.state.phone}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="이메일" type="text" name="email" value={this.state.email}  onChange={this.handleValueChange}/>
+                        <TextField className={classes.wid100} label="금액" type="text" name="price" value={this.state.price}  onChange={this.handleValueChange}/>
+                        <label htmlFor="payment">
+                            현금
+                        </label>
+                        <Radio
+                            checked={this.state.payment === '현금'}
+                            onChange={this.handleValueChangeRdo}
+                            value="현금"
+                            name="payment"
+                            inputProps={{ 'aria-label': 'A' }}
+                        />
+                        <label htmlFor="payment">
+                            카드
+                        </label>
+                        <Radio
+                            checked={this.state.payment === '카드'}
+                            onChange={this.handleValueChangeRdo}
+                            value="카드"
+                            name="payment"
+                            inputProps={{ 'aria-label': 'B' }}
+                        />
+                        <label htmlFor="payment">
+                            계좌이체
+                        </label>
+                        <Radio
+                            checked={this.state.payment === '계좌이체'}
+                            onChange={this.handleValueChangeRdo}
+                            value="계좌이체"
+                            name="payment"
+                            inputProps={{ 'aria-label': 'B' }}
+                        />
                     </DialogContent>
                     <DialogActions>
                         <Button variant="contained" color="primary" onClick={this.handleFormSubmit}>추가</Button>

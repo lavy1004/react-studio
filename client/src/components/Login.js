@@ -30,16 +30,15 @@ class Login extends React.Component{
         })
         
         
-        if(result.data.loginresult === true) {
+        if(result.data.loginresult === true) { // 서버에서 로그인한지 않한지 알려주는 값으로 올려주는값
             this.props.onLogin();
-            console.log(this.props)
             // this.props.history.push('/');
             const logged = await this.setState({isLogin: true})
             
             const doLogin = await this.doLogin()
             
         } else {
-            console.log('???')
+            alert('가입된 아이디가 없습니다 회원가입을 해주세요')
         }
 
     }
@@ -57,7 +56,7 @@ class Login extends React.Component{
         return (
             <Container>
                 {
-                this.state.isLogin ? <Redirect to="/App"/> : 
+                this.state.isLogin ? <Redirect to="/"/> : 
                 <form className="form-signin">
                     <h2 className="form-signin-heading"> Please sign in </h2>
                     <label htmlFor="inputId" className="sr-only">ID</label>
