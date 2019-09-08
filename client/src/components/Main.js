@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components'
-import Counter from './Counter'
 
 const API_KEY = 'd144a6a3d319cebf69f1478e5e0c7ab5';
 
@@ -14,6 +13,7 @@ class Main extends React.Component {
       temperature: 0,
       name: '',
       icon: '',
+      user:'',
     }
   }
 //   getPosition = () => {
@@ -38,6 +38,8 @@ class Main extends React.Component {
 //     this.getWeather();
 //   }
 
+  
+
   getWeather = () => {
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=Seoul&APPID=${API_KEY}`)
     .then(response => response.json())
@@ -47,7 +49,13 @@ class Main extends React.Component {
         name: json.weather[0].main,
         icon: json.weather[0].icon,
       });
-    });
+    })
+    .then(()=>{
+      const data = sessionStorage.getItem('id');
+      this.setState({
+        user:data
+      })
+    })
   }
 
   componentDidMount() {
@@ -64,6 +72,7 @@ class Main extends React.Component {
           <img alt="weather_icon" src={img_url}/>
           <h3>온도 : {temperature}°C</h3>
           <h3>날씨 : {name}</h3>
+          <h3>오늘도 즐거운 하루 되세요 {this.state.user} 님!</h3>
         </Weather>
       );
     }

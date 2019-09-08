@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-
+import Button from '@material-ui/core/Button'
 class Header extends React.Component {
 
 
@@ -13,11 +13,14 @@ class Header extends React.Component {
                 <Element>
                     {
                     logged ?
-                    <ShortCut><Link to="/" onClick={onLogout}>로그아웃</Link></ShortCut> :
-                    <ShortCut><Link to="/login">로그인</Link></ShortCut> 
+                    <ShortCut><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to="/" onClick={onLogout}>로그아웃</Link></Button></ShortCut> :
+                    <ShortCut>
+                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/login'>로그인</Link></Button></Card>  
+                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/join'>회원가입하기</Link></Button></Card>
+                    </ShortCut>
                     }
                     <Logo>
-                       <Link to="/" style={{textDecoration: 'none', color:'#274046'}}>
+                       <Link to="/" style={{textDecoration: 'none', color:'#fff'}}>
                             <img
                             width="100%"
                             height="100%"
@@ -25,7 +28,7 @@ class Header extends React.Component {
                             alt="logo"/>
                        </Link>
                     </Logo>
-                <Search>Studio LaLa</Search>
+                    <Search><Button variant="outlined" color="second"><Link to="/" style={{textDecoration: 'none',color:'gold'}}>Studio LaLa</Link></Button></Search>
                 </Element>
             </Container>
         )
@@ -39,6 +42,10 @@ export default Header;
 const Container = styled.div`
     width: 100%;
     border-bottom: 1px solid #d1d8e4;
+`
+const Card = styled.div`
+    display:inline-block;    
+margin-right:10px;
 `
 
 const Element = styled.div`

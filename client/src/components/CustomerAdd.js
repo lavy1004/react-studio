@@ -38,12 +38,12 @@ class CustomerAdd extends React.Component {
         this.state = {
             file: null,
             userName: '',
-            birthday: '',
-            
+            contents: '',
             phone: '',
             email: '',
             price: '',
             payment: '',
+            note: '',
             admin_id: '',
             fileName: '',
             open: false
@@ -66,25 +66,32 @@ class CustomerAdd extends React.Component {
         //             return null;
         //     }
         // };
-
-        this.addCustomer()
-        .then((response) => {
-            console.log(response.data)
-        this.props.stateRefresh();
-        })
-        this.setState({
-            file: null,
-            userName: '',
-            birthday: '',
-            
-            phone: '',
-            email: '',
-            price: '',
-            payment: '',
-            admin_id: '',
-            fileName: '',
-            open: false
-        })
+        if(!this.emptyCheck(this.state.userName)) {
+            alert('성함을 입력해주세요')
+        } else if(!this.emptyCheck(this.state.contents)) {
+            alert('상품내용을 입력해주세요')
+        } else {
+            alert('성공')
+            this.addCustomer()
+            .then((response) => {
+                console.log(response.data)
+            this.props.stateRefresh();
+            })
+            this.setState({
+                file: null,
+                userName: '',
+                contents: '',
+                phone: '',
+                email: '',
+                price: '',
+                payment: '',
+                note: '',
+                admin_id: '',
+                fileName: '',
+                open: false
+            })
+        }
+        
     }
     handleFileChange = (e) => {
         this.setState({
@@ -105,6 +112,13 @@ class CustomerAdd extends React.Component {
         this.setState(nextState)
     }
 
+    emptyCheck = ( val ) => {
+        if (val === '' || val === null || val === undefined) {
+          return false
+        } else {
+          return true
+        }
+    }
 
     addCustomer = () =>{
         const url ='/api/customers';
@@ -112,14 +126,13 @@ class CustomerAdd extends React.Component {
 
         formData.append('image', this.state.file)
         formData.append('name', this.state.userName)
-        formData.append('birthday', this.state.birthday)
-        
+        formData.append('contents', this.state.contents)
         formData.append('phone', this.state.phone)
         formData.append('email', this.state.email)
         formData.append('price', this.state.price)
         formData.append('payment', this.state.payment)
+        formData.append('note', this.state.note)
         formData.append('admin_id', this.state.admin_id)
-        console.log(this.state.file)
 
         // if( this.state.file === '') {
         //     console.log(this.state.file)
@@ -166,12 +179,12 @@ class CustomerAdd extends React.Component {
         this.setState({
             file: null,
             userName: '',
-            birthday: '',
-            
+            contents: '',
             phone: '',
             email: '',
             price: '',
             payment: '',
+            note: '',
             admin_id: '',
             fileName: '',
             open: false
@@ -204,8 +217,8 @@ class CustomerAdd extends React.Component {
                             </Button>
                         </label>
                         <input className={classes.hidden} id="admin_id" type='text' value={this.state.admin_id} />
-                        <TextField className={classes.wid100} label="이름" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange}/>
-                        <TextField className={classes.wid100} label="생년월일" type="text" name="birthday" value={this.state.birthday}  onChange={this.handleValueChange}/>
+                        <TextField className={classes.wid100} required label="이름" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange}/>
+                        <TextField className={classes.wid100} required label="상품내용" type="text" name="contents" value={this.state.contents}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="전화번호" type="text" name="phone" value={this.state.phone}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="이메일" type="text" name="email" value={this.state.email}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="금액" type="text" name="price" value={this.state.price}  onChange={this.handleValueChange}/>
@@ -238,6 +251,20 @@ class CustomerAdd extends React.Component {
                             value="계좌이체"
                             name="payment"
                             inputProps={{ 'aria-label': 'B' }}
+                        />
+                        
+                        <TextField
+                            className={classes.wid100}
+                            id="filled-multiline-static"
+                            label="메모란"
+                            multiline
+                            rows="4"
+                            defaultValue="메모를 입력하세요"
+                            name="note"
+                            value={this.state.note}  
+                            onChange={this.handleValueChange}
+                            margin="normal"
+                            variant="filled"
                         />
                     </DialogContent>
                     <DialogActions>

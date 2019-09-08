@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
 
 class Login extends React.Component{
     constructor(props) {
@@ -58,13 +59,15 @@ class Login extends React.Component{
                 {
                 this.state.isLogin ? <Redirect to="/"/> : 
                 <form className="form-signin">
-                    <h2 className="form-signin-heading"> Please sign in </h2>
-                    <label htmlFor="inputId" className="sr-only">ID</label>
-                    <input type="text" onChange={this.handleIdChange} id="inputId" className="form-control" placeholder="id" required autoFocus />
-                    <label htmlFor="inputPassword" className="sr-only"> Password</label>
-                    <input type="password" onChange={this.handlePasswordChange} id="inputPassword" className="form-control" placeholder="Password" required />
-                    <button onClick={this.signIn} className="btn btn-lg btn-primary btn-block" type="button"> Sign in
-                    </button>
+                    <h2 className="form-signin-heading"> Login </h2>
+                    <Card>
+                        <TextField variant="outlined" label="ID" type="text" onChange={this.handleIdChange} id="inputId" className="form-control" placeholder="id" required autoFocus />
+                    </Card>
+                    <Card><TextField variant="outlined" label="Password" type="password" onChange={this.handlePasswordChange} id="inputPassword" className="form-control" placeholder="Password" required /></Card>
+                    <Card2>
+                        <Button onClick={this.signIn}   variant="contained" color="primary" type="button"> Login
+                        </Button>
+                    </Card2>
                 </form>
                 }
                 
@@ -76,6 +79,15 @@ class Login extends React.Component{
 const Container = styled.div`
     display: flex;
     flex-flow: column wrap;
+    margin:0 auto;
+`
+const Card = styled.div`
+    width:100%;
+    padding:10px;
+`
+const Card2 = styled.div`
+    text-align:center;
+    padding:10px;
 `
 
 export default Login

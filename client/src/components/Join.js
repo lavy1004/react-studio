@@ -15,6 +15,12 @@ const styles = theme => ({
     },
     wid100: {
         width: 100 + '%'
+    },
+    btn_cent: {
+        textAlign: 'center',
+        width: 100+'%',
+        paddingTop: 20
+
     }
 })
 
@@ -96,8 +102,8 @@ class Join extends React.Component {
         const {classes} = this.props;
 
         return (
-            <div>
-                <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
+            <div className={classes.btn_cent}>
+                <Button  variant="contained" color="primary" onClick={this.handleClickOpen}>
                     회원 가입하기
                 </Button>
                 <Dialog open={this.state.open} onClose={this.handleClose}>

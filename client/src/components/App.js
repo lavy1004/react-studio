@@ -9,21 +9,23 @@ import TableCell from '@material-ui/core/TableCell';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {fade, withStyles} from '@material-ui/core/styles'
 import { TableRow } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField'
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
+import Button from '@material-ui/core/Button'
+// import Badge from '@material-ui/core/Badge';
+// import AccountCircle from '@material-ui/icons/AccountCircle';
+// import MailIcon from '@material-ui/icons/Mail';
+// import NotificationsIcon from '@material-ui/icons/Notifications';
+// import MoreIcon from '@material-ui/icons/MoreVert';
 
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 
 const styles= theme =>({
   root: {
@@ -110,6 +112,9 @@ const styles= theme =>({
       display: 'none',
     },
   },
+  mgr20:{
+    marginRight: 20
+  }
 })
 
 
@@ -122,6 +127,10 @@ class App extends React.Component{
     this.state = {
       customers: "",
       completed: 0,
+      show: false,
+      month:'',
+      day:'',
+      total:0,
       searchKeyword: '' // 초기화
     }
   }
@@ -130,6 +139,10 @@ class App extends React.Component{
     this.state = {
       customers: "",
       completed: 0,
+      show: false,
+      month:'',
+      day:'',
+      total:0,
       searchKeyword: ''
     }
     this.callApi()
@@ -140,13 +153,11 @@ class App extends React.Component{
     this.timer = setInterval(this.progress, 20)
     this.callApi()
       .then(res =>this.setState({customers: res}))
-
   }
 
   //함수표현식인데
   callApi = async () => {
     const data = await sessionStorage.getItem('id');
-    console.log(data)
     const response = await fetch(`/api/customers/${data}`);
     const body = await response.json();
 
@@ -163,19 +174,48 @@ class App extends React.Component{
     nextState[e.target.name] = e.target.value;
     this.setState(nextState);
   }
+  splitM = () => {
+    let data = this.state.customers
+
+    let splitDate = data.map((c)=>{
+      return c.createdDate.split('-')
+    })
+    splitDate.forEach((ele, idx) =>{
+      console.log(ele[1])
+    })
+  }
+
+  reducerM = () => {
+    let data = this.state.customers
+    let total = []
+
+    let price = data.filter((c) => {
+      return c.createdDate.indexOf(this.state.month) > -1;
+    })
+    price.map((c)=>{
+      total.push(c.price)
+    })
+    this.state.total = total.reduce((acc, cur, i)=> {
+      return acc + cur
+    },0)
+    this.setState({
+      show: false
+    })
+  }
 
   render() {
+
     const filteredComponents = (data) =>{
       data = data.filter((c)=>{
-        return c.name.indexOf(this.state.searchKeyword) > -1;
+        return c.createdDate.indexOf(this.state.searchKeyword) > -1;
       })
       return data.map((c)=>{
-        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} phone={c.phone} price={c.price} payment={c.payment} email={c.email}/>
+        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
       })
     }
 
   const {classes} = this.props;
-  const cellList = ["번호","이미지","성명","생년월일","전화번호","이메일","금액","결제수단","설정"]
+  const cellList = ["번호","이미지","성명","상품내용","전화번호","이메일","금액","결제수단","메모란","날짜","설정"]
   return (
     <div className={classes.root}>
        <AppBar position="static">
@@ -216,6 +256,30 @@ class App extends React.Component{
       </div>
     <Paper className={classes.paper}>
       <Table className={classes.table}>
+          <TableBody>
+              <TableRow>
+                <TableCell colSpan="11" align="center">
+                <TextField className={classes.mgr20} variant="outlined" label="월" type="text" name="month" value={this.state.month} onChange={this.handleValueChange}/>
+                <Button className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerM}>
+                    월별합계
+                </Button>
+                {/* <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/>
+                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.splitM}>
+                    일별합계
+                </Button> */}
+                </TableCell>
+                {/* {
+                  this.state.show ? <TableCell className={classes.mgr20}>일별 합계 : {this.state.total}</TableCell>
+                  :  <TableCell className={classes.mgr20}>월별 합계 : {this.state.total}</TableCell>
+                } */}
+                <TableCell className={classes.mgr20}>월별 합계 : {this.state.total}</TableCell>
+                
+              </TableRow>
+              </TableBody>
+        </Table>
+    </Paper>
+    <Paper className={classes.paper}>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
             {
@@ -229,13 +293,14 @@ class App extends React.Component{
             this.state.customers ? 
               filteredComponents(this.state.customers) : 
             <TableRow>
-              <TableCell colSpan="6" align="center">
+              <TableCell colSpan="11" align="center">
                 <CircularProgress className={classes.progress}  vlaue={this.state.completed} />
               </TableCell>
             </TableRow>
             }</TableBody>
       </Table>
     </Paper>
+    
     </div>
   );
 }
