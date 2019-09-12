@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import {withStyles} from '@material-ui/core/Styles'
+import {withStyles} from '@material-ui/styles'
 
 
 const styles = theme => ({
@@ -67,7 +67,7 @@ class Join extends React.Component {
     }
 
     signUp = () =>{
-        const url ='/api/signup';
+        const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/signup';
         const params = {
             id: this.state.id,
             password: this.state.password,

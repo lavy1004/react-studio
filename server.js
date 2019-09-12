@@ -1,17 +1,19 @@
 const fs = require('fs')
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT ||5000;
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(cors());
 
 const data = fs.readFileSync('./database.json');
 const conf = JSON.parse(data);
 const mysql = require('mysql');
 
-// const passportConfig = require('./passport.js');
 
 const connection = mysql.createConnection({
     host: conf.host,
@@ -25,6 +27,15 @@ connection.connect();
 
 const multer = require('multer')
 const upload = multer({dest: './upload'})
+
+
+app.get('/', (req, res) => {
+    res.send({message: 'hello'})
+})
+
+app.get('/api', (req, res) => {
+    res.send({message: 'hello api'})
+})
 
 app.get('/api/customers/:id', (req, res) =>{
     let sql = 'SELECT * FROM CUSTOMER WHERE isDeleted = 0 AND CUSTOMER.admin_id = ?'
@@ -40,10 +51,13 @@ app.get('/api/customers/:id', (req, res) =>{
 })
 
 app.use('/image', express.static('./upload'));
-//의문점 여기서 서버는 분명 5000port 인데 왜 3000port로 주고 받는건지.. 
+
+//의문점 여기서 서버는 분명 5000port 인데 왜 3000port로 주고 받는건지..  proxy 설정에대해 더 공부할것
+
 app.post('/api/customers', upload.single('image'), (req, res)=>{
     let sql = `INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, DATE_FORMAT(NOW(), "%y-%c-%e"), 0)`;
-    let image = req.body.image === 'null'? '/image/default.jpg' : '/image/' + req.file.filename ; // null 이 문자열로 넘어오네.. 이거때매 안됫었네
+    let url = 'http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000'
+    let image = req.body.image === 'null'? `${url}/image/default.jpg` : `${url}/image/` + req.file.filename ; // null 이 문자열로 넘어오네.. 이거때매 안됫었네
     let name = req.body.name;
     let contents = req.body.contents;
     let phone = req.body.phone;

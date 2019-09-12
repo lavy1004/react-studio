@@ -7,7 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {fade, withStyles} from '@material-ui/core/styles'
+import { withStyles} from '@material-ui/core/styles'
 import { TableRow } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField'
 
@@ -19,13 +19,6 @@ import InputBase from '@material-ui/core/InputBase';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button'
-// import Badge from '@material-ui/core/Badge';
-// import AccountCircle from '@material-ui/icons/AccountCircle';
-// import MailIcon from '@material-ui/icons/Mail';
-// import NotificationsIcon from '@material-ui/icons/Notifications';
-// import MoreIcon from '@material-ui/icons/MoreVert';
-
-// import { Link } from 'react-router-dom'
 
 const styles= theme =>({
   root: {
@@ -68,10 +61,7 @@ const styles= theme =>({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
+    
     marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '100%',
@@ -158,9 +148,8 @@ class App extends React.Component{
   //함수표현식인데
   callApi = async () => {
     const data = await sessionStorage.getItem('id');
-    const response = await fetch(`/api/customers/${data}`);
+    const response = await fetch(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers/${data}`);
     const body = await response.json();
-
     return body 
   }
 

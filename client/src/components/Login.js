@@ -25,7 +25,7 @@ class Login extends React.Component{
     }
 
     signIn = async () =>{          
-        const result = await axios.post('/signin', {
+        const result = await axios.post('http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/signin', {
             id: this.state.id,
             password: this.state.password
         })
@@ -48,7 +48,7 @@ class Login extends React.Component{
         const { id, password, isLogin } = this.state;
 
          window.sessionStorage.setItem('id',id);
-         window.sessionStorage.setItem('password',password);
+        //  window.sessionStorage.setItem('password',password);
          window.sessionStorage.setItem('isLogin',isLogin);
     } 
     

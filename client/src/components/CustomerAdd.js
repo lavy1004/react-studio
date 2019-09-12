@@ -6,11 +6,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import {withStyles} from '@material-ui/core/Styles'
+import {withStyles} from '@material-ui/styles'
 import { green } from '@material-ui/core/colors';
 import Radio from '@material-ui/core/Radio';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 
 
 
@@ -121,7 +119,7 @@ class CustomerAdd extends React.Component {
     }
 
     addCustomer = () =>{
-        const url ='/api/customers';
+        const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers';
         const formData = new FormData();
 
         formData.append('image', this.state.file)

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Header from './Layout/Header';
 import Navigation from './Layout/Navigation';
-import Content from './Layout/Content';
 import Router from './Routes/Router';
 import Store from './Store/store'
 
