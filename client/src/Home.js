@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Header from './Layout/Header';
-import Navigation from './Layout/Navigation';
 import Router from './Routes/Router';
 import Store from './Store/store'
 
@@ -49,7 +48,6 @@ class Home extends Component {
       <Store.Provider value={this.state}>
         <Layout>
           <Header logged={logged} onLogout={onLogout} />
-          <Navigation />
           <Router/>
         </Layout>
       </Store.Provider>

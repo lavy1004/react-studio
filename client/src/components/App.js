@@ -118,7 +118,7 @@ class App extends React.Component{
       customers: "",
       completed: 0,
       show: false,
-      month:'',
+      year:'',
       day:'',
       total:0,
       searchKeyword: '' // 초기화
@@ -130,7 +130,7 @@ class App extends React.Component{
       customers: "",
       completed: 0,
       show: false,
-      month:'',
+      year:'',
       day:'',
       total:0,
       searchKeyword: ''
@@ -175,15 +175,37 @@ class App extends React.Component{
     })
   }
 
-  reducerM = () => {
+  reducerDay = () => {
     let data = this.state.customers
     let total = []
 
-    // let split = data.map((c)=>{
-    //   return c.createdDate.substring(5,7)
-    // })
     let price = data.filter((c) => {
-      return c.createdDate.substring(5,7).indexOf(this.state.month) > -1; // 체이닝을 활용할것 ..!
+      return c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
+    })
+    console.log(price)
+    price.map((c)=>{
+      total.push(c.price)
+    })
+    this.state.total = total.reduce((acc, cur, i)=> {
+      return acc + cur
+    },0)
+
+    this.setState({
+      show: true
+    })
+  }
+
+  reducerYear = () => {
+    let data = this.state.customers
+    let total = []
+
+    let split = data.map((c)=>{
+      return c.createdDate.substring(0,4)
+    })
+    console.log(split)
+
+    let price = data.filter((c) => {
+      return c.createdDate.substring(0,4).indexOf(this.state.year) > -1; // 체이닝을 활용할것 ..!
     })
     console.log(price)
     price.map((c)=>{
@@ -253,20 +275,20 @@ class App extends React.Component{
           <TableBody>
               <TableRow>
                 <TableCell colSpan="11" align="center">
-                <TextField className={classes.mgr20} variant="outlined" label="월" type="text" name="month" value={this.state.month} onChange={this.handleValueChange}/>
-                <Button className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerM}>
-                    월별합계
+                <TextField className={classes.mgr20} variant="outlined" label="연" type="text" name="year" value={this.state.year} onChange={this.handleValueChange}/>
+                <Button className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerYear}>
+                    연 매출
                 </Button>
-                {/* <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/>
-                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.splitM}>
+                <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/>
+                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerDay}>
                     일별합계
-                </Button> */}
+                </Button>
                 </TableCell>
-                {/* {
+                {
                   this.state.show ? <TableCell className={classes.mgr20}>일별 합계 : {this.state.total}</TableCell>
-                  :  <TableCell className={classes.mgr20}>월별 합계 : {this.state.total}</TableCell>
-                } */}
-                <TableCell className={classes.mgr20}>월별 합계 : {this.state.total}</TableCell>
+                  :  <TableCell className={classes.mgr20}>년매출 : {this.state.total}</TableCell>
+                }
+                {/* <TableCell className={classes.mgr20}>월별 합계 : {this.state.total}</TableCell> */}
                 
               </TableRow>
               </TableBody>

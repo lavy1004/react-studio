@@ -13,8 +13,12 @@ class Header extends React.Component {
                 <Element>
                     {
                     logged ?
-                    <ShortCut><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to="/" onClick={onLogout}>로그아웃</Link></Button></ShortCut> :
                     <ShortCut>
+                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/app'>리스트</Link></Button></Card>
+                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to="/" onClick={onLogout}>로그아웃</Link></Button></Card>
+                    </ShortCut> :
+                    <ShortCut>
+                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/app'>리스트</Link></Button></Card>
                         <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/login'>로그인</Link></Button></Card>  
                         <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/join'>회원가입하기</Link></Button></Card>
                     </ShortCut>
