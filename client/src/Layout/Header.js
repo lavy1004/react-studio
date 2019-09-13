@@ -28,7 +28,7 @@ class Header extends React.Component {
                             alt="logo"/>
                        </Link>
                     </Logo>
-                    <Search><Button variant="outlined" color="secondary" style={{padding: '15px'  ,fontSize: '1.2rem'}}><Link to="/" style={{textDecoration: 'none',color:'gold'}}>Studio LaLa</Link></Button></Search>
+                    <Search><Button variant="outlined" color="primary" style={{padding: '15px'  ,fontSize: '1.2rem'}}><Link to="/" style={{textDecoration: 'none',color:'gold'}}>Studio LaLa</Link></Button></Search>
                 </Element>
             </Container>
         )

@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button'
 import {withStyles} from '@material-ui/styles'
 import { green } from '@material-ui/core/colors';
 import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 
@@ -105,7 +107,6 @@ class CustomerAdd extends React.Component {
 
     handleValueChangeRdo = (e) =>{
         let nextState = {};
-        console.log(e.target.value)
         nextState[e.target.name] = e.target.value;
         this.setState(nextState)
     }
@@ -220,37 +221,40 @@ class CustomerAdd extends React.Component {
                         <TextField className={classes.wid100} label="전화번호" type="text" name="phone" value={this.state.phone}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="이메일" type="text" name="email" value={this.state.email}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="금액" type="text" name="price" value={this.state.price}  onChange={this.handleValueChange}/>
-                        <label htmlFor="payment">
-                            현금
-                        </label>
-                        <Radio
-                            checked={this.state.payment === '현금'}
-                            onChange={this.handleValueChangeRdo}
+                        <RadioGroup aria-label="position" name="position" row>
+                            
+                            <FormControlLabel
                             value="현금"
+                            control={<Radio color="primary" />}
                             name="payment"
-                            inputProps={{ 'aria-label': 'A' }}
-                        />
-                        <label htmlFor="payment">
-                            카드
-                        </label>
-                        <Radio
-                            checked={this.state.payment === '카드'}
-                            onChange={this.handleValueChangeRdo}
+                            onClick={this.handleValueChangeRdo}
+                            label="현금"
+                            labelPlacement="현금"
+                            />
+                            <FormControlLabel
                             value="카드"
+                            control={<Radio color="primary" />}
                             name="payment"
-                            inputProps={{ 'aria-label': 'B' }}
-                        />
-                        <label htmlFor="payment">
-                            계좌이체
-                        </label>
-                        <Radio
-                            checked={this.state.payment === '계좌이체'}
-                            onChange={this.handleValueChangeRdo}
+                            onClick={this.handleValueChangeRdo}
+                            label="카드"
+                            labelPlacement="카드"
+                            />
+                            <FormControlLabel
+                            value="계좌이체"
+                            control={<Radio color="primary" />}
+                            name="payment"
+                            onClick={this.handleValueChangeRdo}
+                            label="계좌이체"
+                            labelPlacement="계좌이체"
+                            />
+                        </RadioGroup>
+                        {/* <Radio
+                            checked={this.state.payment === '이벤트전파가안되서 radio 그룹으로 checked에 문제있음' }
+                            onClick={this.handleValueChangeRdo}
                             value="계좌이체"
                             name="payment"
-                            inputProps={{ 'aria-label': 'B' }}
                         />
-                        
+                         */}
                         <TextField
                             className={classes.wid100}
                             id="filled-multiline-static"
@@ -260,7 +264,7 @@ class CustomerAdd extends React.Component {
                             defaultValue="메모를 입력하세요"
                             name="note"
                             value={this.state.note}  
-                            onChange={this.handleValueChange}
+                            onInput={this.handleValueChange}
                             margin="normal"
                             variant="filled"
                         />

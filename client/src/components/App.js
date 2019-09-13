@@ -137,6 +137,7 @@ class App extends React.Component{
     }
     this.callApi()
       .then(res =>this.setState({customers: res}))
+      .then(() => {this.substringDate()})
   }
 
   componentDidMount() {
@@ -178,9 +179,13 @@ class App extends React.Component{
     let data = this.state.customers
     let total = []
 
+    // let split = data.map((c)=>{
+    //   return c.createdDate.substring(5,7)
+    // })
     let price = data.filter((c) => {
-      return c.createdDate.indexOf(this.state.month) > -1;
+      return c.createdDate.substring(5,7).indexOf(this.state.month) > -1; // 체이닝을 활용할것 ..!
     })
+    console.log(price)
     price.map((c)=>{
       total.push(c.price)
     })
