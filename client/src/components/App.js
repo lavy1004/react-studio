@@ -141,8 +141,11 @@ class App extends React.Component{
 
   componentDidMount() {
     this.timer = setInterval(this.progress, 20)
+    
     this.callApi()
       .then(res =>this.setState({customers: res}))
+      .then(() => {this.substringDate()})
+      
   }
 
   //함수표현식인데
@@ -163,14 +166,11 @@ class App extends React.Component{
     nextState[e.target.name] = e.target.value;
     this.setState(nextState);
   }
-  splitM = () => {
+  substringDate = () => {
     let data = this.state.customers
 
     let splitDate = data.map((c)=>{
-      return c.createdDate.split('-')
-    })
-    splitDate.forEach((ele, idx) =>{
-      console.log(ele[1])
+      return c.createdDate = c.createdDate.substring(0,10)
     })
   }
 

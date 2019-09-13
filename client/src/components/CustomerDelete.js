@@ -22,6 +22,10 @@ class CustomerDelete extends React.Component{
             method:'DELETE'
         });
         this.props.stateRefresh();
+        this.setState({
+            open: false
+        })
+        
     }
 
     handleClickOpen = () => { // binding 해주어야함 handleClickOpen() {} 이거 안되
