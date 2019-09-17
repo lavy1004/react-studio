@@ -45,7 +45,7 @@ class Login extends React.Component{
     }
 
     doLogin =  () => {
-        const { id, password, isLogin } = this.state;
+        const { id, isLogin } = this.state;
 
          window.sessionStorage.setItem('id',id);
         //  window.sessionStorage.setItem('password',password);

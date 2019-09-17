@@ -20,7 +20,7 @@ class Customer extends React.Component{
         return (
             <TableRow> 
                 <TableCell >{this.props.id}</TableCell>
-                <TableCell ><img className={classes.Max} src={this.props.image}/></TableCell>
+                <TableCell ><img className={classes.Max} src={this.props.image} alt={'고객이미지'}/></TableCell>
                 <TableCell>{this.props.name}</TableCell>
                 <TableCell>{this.props.contents}</TableCell>
                 <TableCell>{this.props.phone}</TableCell>

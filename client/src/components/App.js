@@ -9,7 +9,8 @@ import TableCell from '@material-ui/core/TableCell';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles} from '@material-ui/core/styles'
 import { TableRow } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField'
+// import TextField from '@material-ui/core/TextField'
+// import Menu from '@material-ui/core/Menu';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,7 +19,22 @@ import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MoreIcon from '@material-ui/icons/MoreVert';
+
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+
 import Button from '@material-ui/core/Button'
+
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+// import ListItemText from '@material-ui/core/ListItemText';
+// import Input from '@material-ui/core/Input';
+// import MenuItem from '@material-ui/core/MenuItem';
+
 
 const styles= theme =>({
   root: {
@@ -104,10 +120,12 @@ const styles= theme =>({
   },
   mgr20:{
     marginRight: 20
-  }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 })
-
-
 
 
 class App extends React.Component{
@@ -118,26 +136,38 @@ class App extends React.Component{
       customers: "",
       completed: 0,
       show: false,
+      onlyYear:'',
       year:'',
+      month:'',
       day:'',
+      today: '',
+      score:0,
       total:0,
       searchKeyword: '' // 초기화
     }
   }
   
   stateRefresh = () => {
-    this.state = {
+    this.setState({
       customers: "",
       completed: 0,
       show: false,
+      onlyYear:'',
       year:'',
+      month:'',
       day:'',
+      today: '',
+      score:0,
       total:0,
       searchKeyword: ''
-    }
+    })
     this.callApi()
       .then(res =>this.setState({customers: res}))
       .then(() => {this.substringDate()})
+      .then(()=>{
+        this.today()
+        this.renderToday()
+      })
   }
 
   componentDidMount() {
@@ -146,7 +176,13 @@ class App extends React.Component{
     this.callApi()
       .then(res =>this.setState({customers: res}))
       .then(() => {this.substringDate()})
-      
+      .then(()=>{
+        window.localStorage.setItem('store', JSON.stringify(this.state.customers))
+      })
+      .then(()=>{
+        this.today()
+        this.renderToday()
+      })
   }
 
   //함수표현식인데
@@ -170,17 +206,73 @@ class App extends React.Component{
   substringDate = () => {
     let data = this.state.customers
 
-    let splitDate = data.map((c)=>{
+    data.map((c)=>{
       return c.createdDate = c.createdDate.substring(0,10)
     })
   }
 
+  today = () => {
+    let current = new Date();
+    let yyyy = current.getFullYear();
+    let mm = String(current.getMonth()+1).padStart(2,'0')
+    let dd = String(current.getDate()).padStart(2,'0');
+
+    this.setState({today:yyyy + '-' + mm + '-' + dd})
+  }
+
+  renderToday = () => {
+      
+      let data = JSON.parse(localStorage.getItem('store'))
+      let todayData = data.filter((c)=>{
+        // console.log(c)
+        return c.createdDate === this.state.today
+      })
+      
+      this.setState({customers: todayData}) 
+  }
+
+  prevDay = () => {
+    let oneDaysAgo = new Date(); // getMonth() - 월은 0에서부터 시작된다.
+    
+    this.setState({
+        score: this.state.score + 1
+    });
+    
+    oneDaysAgo.setDate(oneDaysAgo.getDate() - this.state.score);
+    console.log(oneDaysAgo) 
+    let current = oneDaysAgo;
+    let yyyy = current.getFullYear();
+    let mm = String(current.getMonth()+1).padStart(2,'0')
+    let dd = String(current.getDate()).padStart(2,'0');
+
+    this.setState({today:yyyy + '-' + mm + '-' + dd})
+    this.renderToday()
+  }
+
+  nextDay = () => {
+    let oneDaysAgo = new Date(); // getMonth() - 월은 0에서부터 시작된다.
+    
+    this.setState({
+        score: this.state.score - 1
+    });
+    
+    oneDaysAgo.setDate(oneDaysAgo.getDate() - this.state.score); 
+    console.log(oneDaysAgo)
+    let current = oneDaysAgo;
+    let yyyy = current.getFullYear();
+    let mm = String(current.getMonth()+1).padStart(2,'0')
+    let dd = String(current.getDate()).padStart(2,'0');
+
+    this.setState({today:yyyy + '-' + mm + '-' + dd})
+    this.renderToday()
+  }
+
   reducerDay = () => {
-    let data = this.state.customers
+    let data = JSON.parse(localStorage.getItem('store'))
     let total = []
 
     let price = data.filter((c) => {
-      return c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
+      return c.createdDate.substring(0,4).indexOf(this.state.year) > -1 && c.createdDate.substring(5,7).indexOf(this.state.month) > -1 && c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
     })
     console.log(price)
     price.map((c)=>{
@@ -199,13 +291,13 @@ class App extends React.Component{
     let data = this.state.customers
     let total = []
 
-    let split = data.map((c)=>{
-      return c.createdDate.substring(0,4)
-    })
-    console.log(split)
+    // let split = data.map((c)=>{
+    //   return c.createdDate.substring(0,4)
+    // })
+    // console.log(split)
 
     let price = data.filter((c) => {
-      return c.createdDate.substring(0,4).indexOf(this.state.year) > -1; // 체이닝을 활용할것 ..!
+      return c.createdDate.substring(0,4).indexOf(this.state.onlyYear) > -1; // 체이닝을 활용할것 ..!
     })
     console.log(price)
     price.map((c)=>{
@@ -264,7 +356,31 @@ class App extends React.Component{
             />
           </div>
           <div className={classes.grow} />
-          
+          <div className={classes.sectionDesktop}>
+            <IconButton color="inherit">
+              <NavigateBeforeIcon onClick={(e) =>{this.prevDay(e)}}/>
+            </IconButton>
+            <IconButton  color="inherit">
+              <NavigateNextIcon onClick={(e) =>{this.nextDay(e)}}/>
+            </IconButton>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-label="show more"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
       <div className={classes.menu}>
@@ -275,20 +391,127 @@ class App extends React.Component{
           <TableBody>
               <TableRow>
                 <TableCell colSpan="11" align="center">
-                <TextField className={classes.mgr20} variant="outlined" label="연" type="text" name="year" value={this.state.year} onChange={this.handleValueChange}/>
+                {/* <FormControl required className={classes.formControl}>
+                  <InputLabel htmlFor="onlyYear-native-required">onlyYear</InputLabel>
+                  <Select
+                    native
+                    value={this.state.onlyYear}
+                    onChange={this.handleValueChange}
+                    name="onlyYear"
+                    inputProps={{
+                      id: 'onlyYear-native-required',
+                    }}
+                  >
+                    <option value="" />
+                    <option value={2019}>2019</option>
+                    <option value={2020}>2020</option>
+                    <option value={2021}>2021</option>
+                  </Select>
+                  <FormHelperText>Required</FormHelperText>
+                </FormControl>
                 <Button className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerYear}>
                     연 매출
-                </Button>
-                <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/>
+                </Button> */}
+                <FormControl required className={classes.formControl}>
+                  <InputLabel htmlFor="year-native-required">year</InputLabel>
+                  <Select
+                    native
+                    value={this.state.year}
+                    onChange={this.handleValueChange}
+                    name="year"
+                    inputProps={{
+                      id: 'year-native-required',
+                    }}
+                  >
+                    <option value="" />
+                    <option value={2019}>2019</option>
+                    <option value={2020}>2020</option>
+                    <option value={2021}>2021</option>
+                  </Select>
+                  <FormHelperText>Required</FormHelperText>
+                </FormControl>
+                <FormControl required className={classes.formControl}>
+                  <InputLabel htmlFor="month-native-required">month</InputLabel>
+                  <Select
+                    native
+                    value={this.state.month}
+                    onChange={this.handleValueChange}
+                    name="month"
+                    inputProps={{
+                      id: 'month-native-required',
+                    }}
+                  >
+                    <option value="" />
+                    <option value={'01'}>01</option>
+                    <option value={'02'}>02</option>
+                    <option value={'03'}>03</option>
+                    <option value={'04'}>04</option>
+                    <option value={'05'}>05</option>
+                    <option value={'06'}>06</option>
+                    <option value={'07'}>07</option>
+                    <option value={'08'}>08</option>
+                    <option value={'09'}>09</option>
+                    <option value={10}>10</option>
+                    <option value={11}>11</option>
+                    <option value={12}>12</option>
+                  </Select>
+                  <FormHelperText>Required</FormHelperText>
+                </FormControl>
+                <FormControl required className={classes.formControl}>
+                  <InputLabel htmlFor="day-native-required">day</InputLabel>
+                  <Select
+                    native
+                    value={this.state.day}
+                    onChange={this.handleValueChange}
+                    name="day"
+                    inputProps={{
+                      id: 'day-native-required',
+                    }}
+                  >
+                    <option value="" />
+                    <option value={1}>01</option>
+                    <option value={2}>02</option>
+                    <option value={3}>03</option>
+                    <option value={4}>04</option>
+                    <option value={5}>05</option>
+                    <option value={6}>06</option>
+                    <option value={7}>07</option>
+                    <option value={8}>08</option>
+                    <option value={9}>09</option>
+                    <option value={10}>10</option>
+                    <option value={11}>11</option>
+                    <option value={12}>12</option>
+                    <option value={13}>13</option>
+                    <option value={14}>14</option>
+                    <option value={15}>15</option>
+                    <option value={16}>16</option>
+                    <option value={17}>17</option>
+                    <option value={18}>18</option>
+                    <option value={19}>19</option>
+                    <option value={20}>20</option>
+                    <option value={21}>21</option>
+                    <option value={22}>22</option>
+                    <option value={23}>23</option>
+                    <option value={24}>24</option>
+                    <option value={25}>25</option>
+                    <option value={26}>26</option>
+                    <option value={27}>27</option>
+                    <option value={28}>28</option>
+                    <option value={29}>29</option>
+                    <option value={30}>30</option>
+                    <option value={31}>31</option>
+                  </Select>
+                  <FormHelperText>Required</FormHelperText>
+                </FormControl>
+                {/* <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/> */}
                 <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerDay}>
-                    일별합계
+                    합계
                 </Button>
                 </TableCell>
                 {
-                  this.state.show ? <TableCell className={classes.mgr20}>일별 합계 : {this.state.total}</TableCell>
-                  :  <TableCell className={classes.mgr20}>년매출 : {this.state.total}</TableCell>
+                  this.state.show ? <TableCell className={classes.mgr20}>총 매출 : {this.state.total}</TableCell>
+                  :  <TableCell className={classes.mgr20}>수단별 매출 구현중 : {this.state.total}</TableCell>
                 }
-                {/* <TableCell className={classes.mgr20}>월별 합계 : {this.state.total}</TableCell> */}
                 
               </TableRow>
               </TableBody>
