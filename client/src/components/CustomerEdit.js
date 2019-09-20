@@ -1,5 +1,5 @@
 import React from 'react'
-import { post } from 'axios'
+import { put } from 'axios'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -30,7 +30,7 @@ const styles = theme => ({
     checked: {},
 })
 
-class CustomerAdd extends React.Component {
+class CustomerEdit extends React.Component {
     
     constructor(props) {
         super(props);
@@ -52,7 +52,7 @@ class CustomerAdd extends React.Component {
 
     
 
-    handleFormSubmit = (e) => {
+    handleFormSubmit = (e,id) => {
         e.preventDefault()
         // const Dialog({ type, ...rest }) => {
         //     switch(type) {
@@ -72,7 +72,7 @@ class CustomerAdd extends React.Component {
             alert('상품내용을 입력해주세요')
         } else {
             alert('성공')
-            this.addCustomer()
+            this.editCustomer(id)
             .then((response) => {
                 console.log(response.data)
             this.props.stateRefresh();
@@ -106,6 +106,7 @@ class CustomerAdd extends React.Component {
     }
 
     handleValueChangeRdo = (e) =>{
+        console.log(e.target)
         let nextState = {};
         nextState[e.target.name] = e.target.value;
         this.setState(nextState)
@@ -119,8 +120,8 @@ class CustomerAdd extends React.Component {
         }
     }
 
-    addCustomer = () =>{
-        const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers';
+    editCustomer = (id) => {
+        const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers/' + id;
         const formData = new FormData();
 
         formData.append('image', this.state.file)
@@ -148,19 +149,33 @@ class CustomerAdd extends React.Component {
                 'content-type': 'multipart/form-data'
             }
         }
-        return post(url, formData, config)
+        return put(url, formData, config)
     }
 
 
-    handleClickOpen = () => { // binding 해주어야함 handleClickOpen() {} 이거 안되
+    handleClickOpen = (id) => { // binding 해주어야함 handleClickOpen() {} 이거 안되
         
         if(sessionStorage.getItem('id') === null) {
             alert('로그인 후 이용해주세요')
         } else {
             const data = sessionStorage.getItem('id');
-        
+            const StoreData = JSON.parse(localStorage.getItem('store'))
+
+            let filterData = StoreData.filter((c)=>{
+                return c.id === id
+            })
+            console.log(filterData[0].image)
             this.setState({
                 admin_id: data,
+                userName: filterData[0].name,
+                contents: filterData[0].contents,
+                phone: filterData[0].phone,
+                email: filterData[0].email,
+                price: filterData[0].price,
+                payment: filterData[0].payment,
+                note: filterData[0].note,
+                fileName: '',
+                // fileName: filterData[0].image,
                 open: true
             })
         }
@@ -203,11 +218,11 @@ class CustomerAdd extends React.Component {
 
         return (
             <div>
-                <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
-                    고객 추가하기
+                <Button variant="contained" color="primary" onClick={(e)=>{this.handleClickOpen(this.props.id)}}>
+                    수정
                 </Button>
                 <Dialog open={this.state.open} onClose={this.handleClose}>
-                    <DialogTitle> 고객 추가 </DialogTitle>
+                    <DialogTitle> 고객 수정 </DialogTitle>
                     <DialogContent>
                         <input className={classes.hidden} accept="image/*" id="raised-button-file" type='file' file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange}/>
                         <label htmlFor="raised-button-file">
@@ -227,22 +242,25 @@ class CustomerAdd extends React.Component {
                             value="현금"
                             control={<Radio color="primary" />}
                             name="payment"
-                            onClick={this.handleValueChangeRdo}
+                            onChange={this.handleValueChangeRdo}
                             label="현금"
+                            checked={this.state.payment === '현금'}
                             />
                             <FormControlLabel
                             value="카드"
                             control={<Radio color="primary" />}
                             name="payment"
-                            onClick={this.handleValueChangeRdo}
+                            onChange={this.handleValueChangeRdo}
                             label="카드"
+                            checked={this.state.payment === '카드'}
                             />
                             <FormControlLabel
                             value="계좌이체"
                             control={<Radio color="primary" />}
                             name="payment"
-                            onClick={this.handleValueChangeRdo}
+                            onChange={this.handleValueChangeRdo}
                             label="계좌이체"
+                            checked={this.state.payment === '계좌이체'}
                             />
                         </RadioGroup>
                         {/* <Radio
@@ -266,7 +284,7 @@ class CustomerAdd extends React.Component {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button variant="contained" color="primary" onClick={this.handleFormSubmit}>추가</Button>
+                        <Button variant="contained" color="primary"  onClick={(e)=>{this.handleFormSubmit(e,this.props.id)}}>수정</Button>
                         <Button variant="outlined" color="primary" onClick={this.handleClose}>닫기</Button>
                     </DialogActions>
                 </Dialog>
@@ -275,4 +293,4 @@ class CustomerAdd extends React.Component {
     }
 }
 
-export default withStyles(styles)(CustomerAdd)
+export default withStyles(styles)(CustomerEdit)

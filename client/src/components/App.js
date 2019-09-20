@@ -34,7 +34,8 @@ import Select from '@material-ui/core/Select';
 // import ListItemText from '@material-ui/core/ListItemText';
 // import Input from '@material-ui/core/Input';
 // import MenuItem from '@material-ui/core/MenuItem';
-
+import { observable } from 'mobx'
+import { observer } from 'mobx-react'
 
 const styles= theme =>({
   root: {
@@ -127,9 +128,7 @@ const styles= theme =>({
   },
 })
 
-
 class App extends React.Component{
-  
   constructor(props) {
     super(props);
     this.state = {
@@ -164,6 +163,9 @@ class App extends React.Component{
     this.callApi()
       .then(res =>this.setState({customers: res}))
       .then(() => {this.substringDate()})
+      .then(()=>{
+        window.localStorage.setItem('store', JSON.stringify(this.state.customers))
+      })
       .then(()=>{
         this.today()
         this.renderToday()
@@ -234,37 +236,35 @@ class App extends React.Component{
   prevDay = () => {
     let oneDaysAgo = new Date(); // getMonth() - 월은 0에서부터 시작된다.
     
-    this.setState({
-        score: this.state.score + 1
+    this.setState((prevState)=> {
+      return {
+        score: prevState.score + 1
+      }
+    });
+    this.setState((prevState)=> {
+      console.log(prevState.score)
     });
     
-    oneDaysAgo.setDate(oneDaysAgo.getDate() - this.state.score);
-    console.log(oneDaysAgo) 
-    let current = oneDaysAgo;
-    let yyyy = current.getFullYear();
-    let mm = String(current.getMonth()+1).padStart(2,'0')
-    let dd = String(current.getDate()).padStart(2,'0');
+    
+    // oneDaysAgo.setDate(oneDaysAgo.getDate() - this.state.score); // this.state.score 로 접근햇더니 문제가생겼다..
 
-    this.setState({today:yyyy + '-' + mm + '-' + dd})
-    this.renderToday()
+    // let current = oneDaysAgo;
+    // let yyyy = current.getFullYear();
+    // let mm = String(current.getMonth()+1).padStart(2,'0')
+    // let dd = String(current.getDate()).padStart(2,'0');
+
+    // this.setState((prevState)=> {
+    //   return {
+    //     today: yyyy + '-' + mm + '-' + dd
+    //   }
+    // });
+    // this.setState(()=>{console.log(this.state.today)})
+    // // 이부분을 어떻게 처리해야될지 모르겠다 .. 이전 today 값에서 yyyy-mm-dd 에서 dd를 1만큼 빼줘야되는데 day값만 어떻게빼주지? 이거 mobx로 하면 되는데 아..
+
+    // this.renderToday()
   }
 
   nextDay = () => {
-    let oneDaysAgo = new Date(); // getMonth() - 월은 0에서부터 시작된다.
-    
-    this.setState({
-        score: this.state.score - 1
-    });
-    
-    oneDaysAgo.setDate(oneDaysAgo.getDate() - this.state.score); 
-    console.log(oneDaysAgo)
-    let current = oneDaysAgo;
-    let yyyy = current.getFullYear();
-    let mm = String(current.getMonth()+1).padStart(2,'0')
-    let dd = String(current.getDate()).padStart(2,'0');
-
-    this.setState({today:yyyy + '-' + mm + '-' + dd})
-    this.renderToday()
   }
 
   reducerDay = () => {
@@ -324,6 +324,8 @@ class App extends React.Component{
 
   const {classes} = this.props;
   const cellList = ["번호","이미지","성명","상품내용","전화번호","이메일","금액","결제수단","메모란","날짜","설정"]
+
+
   return (
     <div className={classes.root}>
        <AppBar position="static">
@@ -508,6 +510,7 @@ class App extends React.Component{
                     합계
                 </Button>
                 </TableCell>
+                {this.state.today}
                 {
                   this.state.show ? <TableCell className={classes.mgr20}>총 매출 : {this.state.total}</TableCell>
                   :  <TableCell className={classes.mgr20}>수단별 매출 구현중 : {this.state.total}</TableCell>
@@ -523,7 +526,7 @@ class App extends React.Component{
           <TableRow>
             {
               cellList.map(c =>{ 
-              return <TableCell className={classes.tableHead}>{c}</TableCell>
+              return <TableCell  key={c.id} className={classes.tableHead}>{c}</TableCell>
               })
             }
           </TableRow>
