@@ -191,7 +191,7 @@ class App extends React.Component{
         this.reducerTotal();
       })
   }
-
+  
   //함수표현식인데
   callApi = async () => {
     const data = await sessionStorage.getItem('id');
@@ -282,6 +282,9 @@ class App extends React.Component{
     let cash = []
     let card = []
     let account = []
+    this.state.card = ''
+    this.state.cash = ''
+    this.state.account = ''
 
     let price = data.filter((c) => {
       return c.createdDate.substring(0,4).indexOf(this.state.year) > -1 && c.createdDate.substring(5,7).indexOf(this.state.month) > -1 && c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
@@ -304,6 +307,7 @@ class App extends React.Component{
               return acc + cur
           },0)
         }
+        
     })
     
     price.map((c)=>{
@@ -327,7 +331,7 @@ class App extends React.Component{
         let data = JSON.parse(localStorage.getItem('store'))
 
         data = data.filter((c)=>{
-          return c.createdDate.indexOf(this.state.searchKeyword) > -1;
+          return c.createdDate.indexOf(this.state.searchKeyword) > -1 || c.name.indexOf(this.state.searchKeyword) > -1 ;
         })
         return data.map((c)=>{
           return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
@@ -531,10 +535,11 @@ class App extends React.Component{
                     합계
                 </Button>
                 </TableCell>
-                <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell>
-                <TableCell className={classes.mgr20}>현금 : {this.state.cash}</TableCell>
-                <TableCell className={classes.mgr20}>계좌 : {this.state.account}</TableCell>
-                <TableCell className={classes.mgr20}>총 매출 : {this.state.total}</TableCell>
+                { this.state.card ? <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell> : ''}
+                { this.state.cash ? <TableCell className={classes.mgr20}>현금 : {this.state.cash}</TableCell> : ''}
+                { this.state.account ? <TableCell className={classes.mgr20}>계좌 : {this.state.account}</TableCell> : ''}
+                { this.state.total ? <TableCell className={classes.mgr20}>총 금액 : {this.state.total}</TableCell> : ''}
+                
               </TableRow>
               </TableBody>
         </Table>
