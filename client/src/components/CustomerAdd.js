@@ -221,14 +221,14 @@ class CustomerAdd extends React.Component {
                         <TextField className={classes.wid100} label="전화번호" type="text" name="phone" value={this.state.phone}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="이메일" type="text" name="email" value={this.state.email}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="금액" type="text" name="price" value={this.state.price}  onChange={this.handleValueChange}/>
-                        <RadioGroup aria-label="position" name="position" row>
-                            
+                        <RadioGroup aria-label="position" name="position" required row>
                             <FormControlLabel
                             value="현금"
                             control={<Radio color="primary" />}
                             name="payment"
                             onClick={this.handleValueChangeRdo}
                             label="현금"
+                            required
                             />
                             <FormControlLabel
                             value="카드"
@@ -236,6 +236,7 @@ class CustomerAdd extends React.Component {
                             name="payment"
                             onClick={this.handleValueChangeRdo}
                             label="카드"
+                            required
                             />
                             <FormControlLabel
                             value="계좌이체"
@@ -243,6 +244,7 @@ class CustomerAdd extends React.Component {
                             name="payment"
                             onClick={this.handleValueChangeRdo}
                             label="계좌이체"
+                            required
                             />
                         </RadioGroup>
                         {/* <Radio

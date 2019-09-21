@@ -31,11 +31,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-// import ListItemText from '@material-ui/core/ListItemText';
-// import Input from '@material-ui/core/Input';
-// import MenuItem from '@material-ui/core/MenuItem';
-import { observable } from 'mobx'
-import { observer } from 'mobx-react'
 
 const styles= theme =>({
   root: {
@@ -132,6 +127,7 @@ class App extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
+      selectedDate: '',
       customers: "",
       completed: 0,
       show: false,
@@ -142,12 +138,16 @@ class App extends React.Component{
       today: '',
       score:0,
       total:0,
+      cash:0,
+      card:0,
+      account:0,
       searchKeyword: '' // 초기화
     }
   }
   
   stateRefresh = () => {
     this.setState({
+      selectedDate: '',
       customers: "",
       completed: 0,
       show: false,
@@ -158,6 +158,9 @@ class App extends React.Component{
       today: '',
       score:0,
       total:0,
+      cash:0,
+      card:0,
+      account:0,
       searchKeyword: ''
     })
     this.callApi()
@@ -167,8 +170,9 @@ class App extends React.Component{
         window.localStorage.setItem('store', JSON.stringify(this.state.customers))
       })
       .then(()=>{
-        this.today()
-        this.renderToday()
+        this.setDate();
+        this.renderToday();
+        this.reducerTotal();
       })
   }
 
@@ -182,8 +186,9 @@ class App extends React.Component{
         window.localStorage.setItem('store', JSON.stringify(this.state.customers))
       })
       .then(()=>{
-        this.today()
-        this.renderToday()
+        this.setDate();
+        this.renderToday();
+        this.reducerTotal();
       })
   }
 
@@ -213,71 +218,98 @@ class App extends React.Component{
     })
   }
 
-  today = () => {
-    let current = new Date();
-    let yyyy = current.getFullYear();
-    let mm = String(current.getMonth()+1).padStart(2,'0')
-    let dd = String(current.getDate()).padStart(2,'0');
+  // today = () => {
+  //   let current = new Date();
+  //   let yyyy = current.getFullYear();
+  //   let mm = String(current.getMonth()+1).padStart(2,'0')
+  //   let dd = String(current.getDate()).padStart(2,'0');
 
-    this.setState({today:yyyy + '-' + mm + '-' + dd})
-  }
+  //   this.setState({today:yyyy + '-' + mm + '-' + dd})
+  // }
+  setDate = (newDate) => {
+    const date = newDate || new Date();
+    let yyyy = date.getFullYear();
+    let mm = String(date.getMonth()+1).padStart(2,'0')
+    let dd = String(date.getDate()).padStart(2,'0');
+
+    this.setState(()=>{
+      return {
+        selectedDate:yyyy + "-" + mm + "-" + dd
+      } 
+  });
+    this.setState(()=>console.log(this.state.selectedDate))
+  };
 
   renderToday = () => {
       
       let data = JSON.parse(localStorage.getItem('store'))
       let todayData = data.filter((c)=>{
-        // console.log(c)
-        return c.createdDate === this.state.today
+        console.log(this.state.selectedDate)
+        return c.createdDate === this.state.selectedDate
       })
       
       this.setState({customers: todayData}) 
   }
 
-  prevDay = () => {
-    let oneDaysAgo = new Date(); // getMonth() - 월은 0에서부터 시작된다.
-    
-    this.setState((prevState)=> {
-      return {
-        score: prevState.score + 1
-      }
-    });
-    this.setState((prevState)=> {
-      console.log(prevState.score)
-    });
-    
-    
-    // oneDaysAgo.setDate(oneDaysAgo.getDate() - this.state.score); // this.state.score 로 접근햇더니 문제가생겼다..
+  getPreviousDate = () => {
+    const { selectedDate } = this.state
 
-    // let current = oneDaysAgo;
-    // let yyyy = current.getFullYear();
-    // let mm = String(current.getMonth()+1).padStart(2,'0')
-    // let dd = String(current.getDate()).padStart(2,'0');
+    const currentDayInMilli = new Date(selectedDate).getTime()
+    const oneDay = 1000 * 60 *60 *24
+    const previousDayInMilli = currentDayInMilli - oneDay
+    const previousDate = new Date(previousDayInMilli)
 
-    // this.setState((prevState)=> {
-    //   return {
-    //     today: yyyy + '-' + mm + '-' + dd
-    //   }
-    // });
-    // this.setState(()=>{console.log(this.state.today)})
-    // // 이부분을 어떻게 처리해야될지 모르겠다 .. 이전 today 값에서 yyyy-mm-dd 에서 dd를 1만큼 빼줘야되는데 day값만 어떻게빼주지? 이거 mobx로 하면 되는데 아..
-
-    // this.renderToday()
+    console.log(previousDate)
+    this.setDate(previousDate)
+    this.renderToday()
   }
 
-  nextDay = () => {
+  getNextDate = () => {
+    const { selectedDate } = this.state
+
+    const currentDayInMilli = new Date(selectedDate).getTime()
+    const oneDay = 1000 * 60 *60 *24
+    const nextDayInMilli = currentDayInMilli + oneDay
+    const nextDate = new Date(nextDayInMilli)
+
+    this.setDate(nextDate)
+    this.renderToday()
   }
 
-  reducerDay = () => {
+  reducerTotal = () => {
     let data = JSON.parse(localStorage.getItem('store'))
     let total = []
+    let cash = []
+    let card = []
+    let account = []
 
     let price = data.filter((c) => {
       return c.createdDate.substring(0,4).indexOf(this.state.year) > -1 && c.createdDate.substring(5,7).indexOf(this.state.month) > -1 && c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
     })
     console.log(price)
+    let groupPrice = price.filter((c)=>{
+        if(c.payment === '현금'){
+          cash.push(c.price)
+          this.state.cash = cash.reduce((acc, cur, i)=>{
+              return acc + cur
+          },0)
+        } else if (c.payment === '카드'){
+          card.push(c.price)
+          this.state.card = card.reduce((acc, cur, i)=>{
+              return acc + cur
+          },0)
+        } else if (c.payment === '계좌이체'){
+          account.push(c.price)
+          this.state.account = account.reduce((acc, cur, i)=>{
+              return acc + cur
+          },0)
+        }
+    })
+    
     price.map((c)=>{
       total.push(c.price)
     })
+
     this.state.total = total.reduce((acc, cur, i)=> {
       return acc + cur
     },0)
@@ -287,39 +319,28 @@ class App extends React.Component{
     })
   }
 
-  reducerYear = () => {
-    let data = this.state.customers
-    let total = []
-
-    // let split = data.map((c)=>{
-    //   return c.createdDate.substring(0,4)
-    // })
-    // console.log(split)
-
-    let price = data.filter((c) => {
-      return c.createdDate.substring(0,4).indexOf(this.state.onlyYear) > -1; // 체이닝을 활용할것 ..!
-    })
-    console.log(price)
-    price.map((c)=>{
-      total.push(c.price)
-    })
-    this.state.total = total.reduce((acc, cur, i)=> {
-      return acc + cur
-    },0)
-    this.setState({
-      show: false
-    })
-  }
 
   render() {
 
-    const filteredComponents = (data) =>{
-      data = data.filter((c)=>{
-        return c.createdDate.indexOf(this.state.searchKeyword) > -1;
-      })
-      return data.map((c)=>{
-        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
-      })
+    const filteredComponents =  (data) =>{
+      if(this.state.searchKeyword) { 
+        let data = JSON.parse(localStorage.getItem('store'))
+
+        data = data.filter((c)=>{
+          return c.createdDate.indexOf(this.state.searchKeyword) > -1;
+        })
+        return data.map((c)=>{
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+        })
+      } else {
+        
+        data = data.filter((c)=>{
+          return c.createdDate.indexOf(this.state.searchKeyword) > -1;
+        })
+        return data.map((c)=>{
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+        })
+      }
     }
 
   const {classes} = this.props;
@@ -346,7 +367,7 @@ class App extends React.Component{
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="검색하기"
+              placeholder="검색하기(2019-09-21)"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -360,11 +381,11 @@ class App extends React.Component{
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton color="inherit">
-              <NavigateBeforeIcon onClick={(e) =>{this.prevDay(e)}}/>
+              <NavigateBeforeIcon onClick={this.getPreviousDate}/>
             </IconButton>
-            <IconButton  color="inherit">
-              <NavigateNextIcon onClick={(e) =>{this.nextDay(e)}}/>
-            </IconButton>
+            {/* <IconButton  color="inherit">
+              <NavigateNextIcon onClick={this.getNextDate}/>
+            </IconButton> */}
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -506,16 +527,14 @@ class App extends React.Component{
                   <FormHelperText>Required</FormHelperText>
                 </FormControl>
                 {/* <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/> */}
-                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerDay}>
+                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerTotal}>
                     합계
                 </Button>
                 </TableCell>
-                {this.state.today}
-                {
-                  this.state.show ? <TableCell className={classes.mgr20}>총 매출 : {this.state.total}</TableCell>
-                  :  <TableCell className={classes.mgr20}>수단별 매출 구현중 : {this.state.total}</TableCell>
-                }
-                
+                <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell>
+                <TableCell className={classes.mgr20}>현금 : {this.state.cash}</TableCell>
+                <TableCell className={classes.mgr20}>계좌 : {this.state.account}</TableCell>
+                <TableCell className={classes.mgr20}>총 매출 : {this.state.total}</TableCell>
               </TableRow>
               </TableBody>
         </Table>
@@ -531,7 +550,8 @@ class App extends React.Component{
             }
           </TableRow>
         </TableHead>
-        <TableBody>{
+        <TableBody>
+            {
             this.state.customers ? 
               filteredComponents(this.state.customers) : 
             <TableRow>
@@ -539,7 +559,8 @@ class App extends React.Component{
                 <CircularProgress className={classes.progress}  vlaue={this.state.completed} />
               </TableCell>
             </TableRow>
-            }</TableBody>
+            }
+        </TableBody>
       </Table>
     </Paper>
     
