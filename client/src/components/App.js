@@ -9,6 +9,7 @@ import TableCell from '@material-ui/core/TableCell';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles} from '@material-ui/core/styles'
 import { TableRow } from '@material-ui/core';
+import { Link } from 'react-router-dom'
 // import TextField from '@material-ui/core/TextField'
 // import Menu from '@material-ui/core/Menu';
 
@@ -141,7 +142,9 @@ class App extends React.Component{
       cash:0,
       card:0,
       account:0,
+      position:'',
       searchKeyword: '' // 초기화
+
     }
   }
   
@@ -184,6 +187,8 @@ class App extends React.Component{
       .then(() => {this.substringDate()})
       .then(()=>{
         window.localStorage.setItem('store', JSON.stringify(this.state.customers))
+        console.log( window.sessionStorage.getItem('POSITION'))
+        this.setState({position: window.sessionStorage.getItem('POSITION')})
       })
       .then(()=>{
         this.setDate();
@@ -396,7 +401,7 @@ class App extends React.Component{
               aria-haspopup="true"
               color="inherit"
             >
-              <AccountCircle />
+              <Link to="/mypage" style={{textDecoration: 'none', color:'#fff'}}><AccountCircle /></Link>
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
@@ -535,11 +540,11 @@ class App extends React.Component{
                     합계
                 </Button>
                 </TableCell>
-                { this.state.card ? <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell> : ''}
-                { this.state.cash ? <TableCell className={classes.mgr20}>현금 : {this.state.cash}</TableCell> : ''}
-                { this.state.account ? <TableCell className={classes.mgr20}>계좌 : {this.state.account}</TableCell> : ''}
-                { this.state.total ? <TableCell className={classes.mgr20}>총 금액 : {this.state.total}</TableCell> : ''}
-                
+
+                  { this.state.card && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell> : ''}
+                  { this.state.cash && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>현금 : {this.state.cash}</TableCell> : ''}
+                  { this.state.account && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>계좌 : {this.state.account}</TableCell> : ''}
+                  { this.state.total && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>총 금액 : {this.state.total}</TableCell> : ''} 
               </TableRow>
               </TableBody>
         </Table>

@@ -109,7 +109,7 @@ app.post('/signin', (req, res) => {
         if(err) throw err;
         
         if(rows.length>0) {
-            return res.send({loginresult:true,name:rows[0].name});
+            return res.send({loginresult:true,name:rows[0].NAME,position:rows[0].POSITION});
         } else {
             return res.send({loginresult:false})
         }
@@ -118,14 +118,15 @@ app.post('/signin', (req, res) => {
 
 app.post('/api/signup', (req, res)=>{
 
-    let sql = `INSERT INTO account_info VALUES (null, ?, ?, ?, ?, ?, ?)`;
+    let sql = `INSERT INTO account_info VALUES (null, ?, ?, ?, ?, ?, ?, ?)`;
     let id = req.body.id;
     let password = req.body.password;
     let name = req.body.name;
     let sex = req.body.sex;
     let birthday = req.body.birthday;
     let email = req.body.email;
-    let params = [id, password, name, sex, birthday, email];
+    let position = req.body.position;
+    let params = [id, password, name, sex, birthday, email, position];
     connection.query(sql, params,
         (err, rows, fields)=>{
             res.send(rows)

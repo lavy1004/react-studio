@@ -38,7 +38,7 @@ class CustomerDelete extends React.Component{
     
     render() {
         return (
-            <div>
+            <div style={{display:'inline-block'}}>
                 <Button variant="contained" color="secondary" onClick={this.handleClickOpen}>삭제</Button>
                 <Dialog open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle onClose={this.handleClose}>

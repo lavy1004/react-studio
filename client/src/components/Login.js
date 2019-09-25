@@ -13,6 +13,7 @@ class Login extends React.Component{
         this.state = {
           id:'',
           password:'',
+          position:'',
           isLogin: false
         };
     }
@@ -30,11 +31,11 @@ class Login extends React.Component{
             password: this.state.password
         })
         
-        
+        console.log(result.data)
         if(result.data.loginresult === true) { // 서버에서 로그인한지 않한지 알려주는 값으로 올려주는값
             this.props.onLogin();
             // this.props.history.push('/');
-            const logged = await this.setState({isLogin: true})
+            const logged = await this.setState({isLogin: true, position:result.data.position})
             
             const doLogin = await this.doLogin()
             
@@ -45,10 +46,10 @@ class Login extends React.Component{
     }
 
     doLogin =  () => {
-        const { id, isLogin } = this.state;
+        const { id, isLogin, position } = this.state;
 
          window.sessionStorage.setItem('id',id);
-        //  window.sessionStorage.setItem('password',password);
+         window.sessionStorage.setItem('POSITION',position);
          window.sessionStorage.setItem('isLogin',isLogin);
     } 
     

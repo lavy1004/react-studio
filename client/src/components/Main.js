@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
+import logo from '../assets/main.png';
 
 const API_KEY = 'd144a6a3d319cebf69f1478e5e0c7ab5';
 
@@ -68,10 +69,7 @@ class Main extends React.Component {
 
       return (
         <Weather>
-          <h1>오늘의 날씨</h1>
-          <img alt="weather_icon" src={img_url}/>
-          <h3>온도 : {temperature}°C</h3>
-          <h3>날씨 : {name}</h3>
+          <h1><img src={logo} alt="logo"/></h1>
           <h3>오늘도 즐거운 하루 되세요 {this.state.user} 님!</h3>
         </Weather>
       );
@@ -80,7 +78,9 @@ class Main extends React.Component {
   
   const Weather = styled.div`
     text-align:center;
-    margin:0 auto;
+    margin:0;
+    width:100%;
+    background:black;
   `
 
 export default Main;

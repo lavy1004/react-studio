@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import Button from '@material-ui/core/Button'
+import logo from '../assets/logo.png';
 class Header extends React.Component {
 
 
@@ -28,12 +29,11 @@ class Header extends React.Component {
                        <Link to="/" style={{textDecoration: 'none', color:'#fff'}}>
                             <img
                             width="100%"
-                            height="100%"
-                            src="https://placeimg.com/128/128/10"
+                            src={logo}
                             alt="logo"/>
                        </Link>
                     </Logo>
-                    <Search><Button variant="outlined" color="primary" style={{padding: '15px'  ,fontSize: '1.2rem'}}><Link to="/" style={{textDecoration: 'none',color:'gold'}}>Studio LaLa</Link></Button></Search>
+                    {/* <Search><Button variant="outlined" color="primary" style={{padding: '15px'  ,fontSize: '2em'}}><Link to="/" style={{textDecoration: 'none',color:'black'}}>Studio LaLa</Link></Button></Search> */}
                 </Element>
             </Container>
         )
@@ -46,7 +46,7 @@ export default Header;
 
 const Container = styled.div`
     width: 100%;
-    border-bottom: 1px solid #d1d8e4;
+    margin-top:20px;
 `
 const Card = styled.div`
     display:inline-block;    
@@ -68,7 +68,10 @@ const ShortCut = styled.div`
 
 const Logo = styled.div`
     order: 2;
-    width: 128px;
+    order: 2;
+    width: 150px;
+    margin-left: 20px;
+    margin-top: -20px;
     height: 128px;
 `
 

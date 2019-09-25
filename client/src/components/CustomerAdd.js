@@ -70,8 +70,10 @@ class CustomerAdd extends React.Component {
             alert('성함을 입력해주세요')
         } else if(!this.emptyCheck(this.state.contents)) {
             alert('상품내용을 입력해주세요')
-        } else {
-            alert('성공')
+        } else if (!this.emptyCheck(this.state.payment)) {
+            alert('결제수단을 선택해주세요')
+        }else {
+            alert('등록이 완료되었습니다')
             this.addCustomer()
             .then((response) => {
                 console.log(response.data)
@@ -240,7 +242,7 @@ class CustomerAdd extends React.Component {
                             />
                             <FormControlLabel
                             value="계좌이체"
-                            control={<Radio color="primary" />}
+                            control={<Radio color="primary"/>}
                             name="payment"
                             onClick={this.handleValueChangeRdo}
                             label="계좌이체"

@@ -217,7 +217,7 @@ class CustomerEdit extends React.Component {
         const {classes} = this.props;
 
         return (
-            <div>
+            <div  style={{display:'inline-block',marginRight:20+'px'}}>
                 <Button variant="contained" color="primary" onClick={(e)=>{this.handleClickOpen(this.props.id)}}>
                     수정
                 </Button>
