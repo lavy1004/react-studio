@@ -33,7 +33,6 @@ class Header extends React.Component {
                             alt="logo"/>
                        </Link>
                     </Logo>
-                    {/* <Search><Button variant="outlined" color="primary" style={{padding: '15px'  ,fontSize: '2em'}}><Link to="/" style={{textDecoration: 'none',color:'black'}}>Studio LaLa</Link></Button></Search> */}
                 </Element>
             </Container>
         )
@@ -73,12 +72,4 @@ const Logo = styled.div`
     margin-left: 20px;
     margin-top: -20px;
     height: 128px;
-`
-
-const Search = styled.div`
-    width: calc(100% - 128px);
-    order: 3;
-    text-align: center;
-    height:128px;
-    line-height:128px;
 `

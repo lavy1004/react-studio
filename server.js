@@ -134,4 +134,41 @@ app.post('/api/signup', (req, res)=>{
     )
 })
 
+app.get('/api/calculate', (req, res)=>{
+    console.log(req.query.selectedDate)
+    let sql = 'SELECT * FROM CALCULATE where createdDate = ? ';
+    let selectedDate = req.query.selectedDate
+
+    
+    let params = [selectedDate];
+    connection.query(sql, params,
+        (err, rows, fields)=>{
+            console.log(rows)
+            res.send(rows)
+        }
+    )
+})
+
+app.post('/api/calculate', (req, res) =>{
+    // let sql = 'SELECT * FROM CALCULATE GROUP BY createdDate HAVING COUNT(createdDate) > 1'
+    let sql = `INSERT INTO CALCULATE VALUES (null, ?, ?, ?, ?, ?)`;
+    let createdDate = req.body.selectedDate
+    let spending = req.body.spending
+    let balance = req.body.balance
+    let take = req.body.take
+    let admin_id = req.body.admin_id
+
+    let params = [createdDate, spending, balance, take, admin_id];
+    connection.query(sql, params,
+        (err, rows, fields)=>{
+            if(rows.length>0) {
+                console.log(rows)
+            } else {
+                console.log('중복없음')
+            }
+            
+        }
+    )
+})
+
 app.listen(port, () => console.log(`listening on port ${port}`));

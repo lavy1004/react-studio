@@ -23,9 +23,9 @@ class Customer extends React.Component{
                 <TableCell >{this.props.id}</TableCell>
                 <TableCell ><img className={classes.Max} src={this.props.image} alt={'고객이미지'}/></TableCell>
                 <TableCell>{this.props.name}</TableCell>
-                <TableCell>{this.props.contents}</TableCell>
                 <TableCell>{this.props.phone}</TableCell>
                 <TableCell>{this.props.email}</TableCell>
+                <TableCell>{this.props.contents}</TableCell>
                 <TableCell>{this.props.price}</TableCell>
                 <TableCell>{this.props.payment}</TableCell>
                 <TableCell>{this.props.note}</TableCell>

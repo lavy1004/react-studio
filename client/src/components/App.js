@@ -10,7 +10,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles} from '@material-ui/core/styles'
 import { TableRow } from '@material-ui/core';
 import { Link } from 'react-router-dom'
-// import TextField from '@material-ui/core/TextField'
+import TextField from '@material-ui/core/TextField'
+import Axios, { post } from 'axios'
 // import Menu from '@material-ui/core/Menu';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -143,6 +144,9 @@ class App extends React.Component{
       card:0,
       account:0,
       position:'',
+      spending:'',
+      take:'',
+      balance:'',
       searchKeyword: '' // 초기화
 
     }
@@ -164,6 +168,10 @@ class App extends React.Component{
       cash:0,
       card:0,
       account:0,
+      position:'',
+      spending:'',
+      take:'',
+      balance:'',
       searchKeyword: ''
     })
     this.callApi()
@@ -187,7 +195,6 @@ class App extends React.Component{
       .then(() => {this.substringDate()})
       .then(()=>{
         window.localStorage.setItem('store', JSON.stringify(this.state.customers))
-        console.log( window.sessionStorage.getItem('POSITION'))
         this.setState({position: window.sessionStorage.getItem('POSITION')})
       })
       .then(()=>{
@@ -203,6 +210,23 @@ class App extends React.Component{
     const response = await fetch(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers/${data}`);
     const body = await response.json();
     return body 
+  }
+
+  handleCalcSubmit = () =>{
+    let yyyy = this.state.year
+    let mm = this.state.month
+    let dd = this.state.day
+    const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate';
+
+    const params = {
+      spending: this.state.spending,
+      take: this.state.take,
+      balance: this.state.balance,
+      admin_id: sessionStorage.getItem('id'),
+      selectedDate: yyyy+'-'+mm+'-'+dd
+    }
+
+    return post(url, params)
   }
 
   progress = () => {
@@ -242,14 +266,12 @@ class App extends React.Component{
         selectedDate:yyyy + "-" + mm + "-" + dd
       } 
   });
-    this.setState(()=>console.log(this.state.selectedDate))
   };
 
   renderToday = () => {
       
       let data = JSON.parse(localStorage.getItem('store'))
       let todayData = data.filter((c)=>{
-        console.log(this.state.selectedDate)
         return c.createdDate === this.state.selectedDate
       })
       
@@ -264,7 +286,6 @@ class App extends React.Component{
     const previousDayInMilli = currentDayInMilli - oneDay
     const previousDate = new Date(previousDayInMilli)
 
-    console.log(previousDate)
     this.setDate(previousDate)
     this.renderToday()
   }
@@ -281,6 +302,31 @@ class App extends React.Component{
     this.renderToday()
   }
 
+  searchCalc = async () => {
+    let yyyy = this.state.year
+    let mm = this.state.month
+    let dd = this.state.day
+    
+    // let res = await Axios.get('api/calculate',  
+    //   {
+    //   params : {
+    //     selectedDate: yyyy + '-' + mm + '-' + dd
+    //   }
+    // })
+    let res = await fetch(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate?selectedDate=${yyyy+'-'+mm+'-'+dd}`)
+
+    let resData = await res
+    let body = await resData.json()
+    
+    body.map((c)=>{
+      this.setState({
+        spending:c.spending,
+        take:c.take,
+        balance:c.balance,
+      })
+    })
+  }
+
   reducerTotal = () => {
     let data = JSON.parse(localStorage.getItem('store'))
     let total = []
@@ -294,7 +340,6 @@ class App extends React.Component{
     let price = data.filter((c) => {
       return c.createdDate.substring(0,4).indexOf(this.state.year) > -1 && c.createdDate.substring(5,7).indexOf(this.state.month) > -1 && c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
     })
-    console.log(price)
     let groupPrice = price.filter((c)=>{
         if(c.payment === '현금'){
           cash.push(c.price)
@@ -323,8 +368,11 @@ class App extends React.Component{
       return acc + cur
     },0)
 
+    this.searchCalc().
+      then()
+    
     this.setState({
-      show: true
+      show: true,
     })
   }
 
@@ -353,7 +401,7 @@ class App extends React.Component{
     }
 
   const {classes} = this.props;
-  const cellList = ["번호","이미지","성명","상품내용","전화번호","이메일","금액","결제수단","메모란","날짜","설정"]
+  const cellList = ["번호","이미지","성명","전화번호","이메일","상품내용","금액","결제수단","메모란","날짜","설정"]
 
 
   return (
@@ -422,7 +470,7 @@ class App extends React.Component{
       <Table className={classes.table}>
           <TableBody>
               <TableRow>
-                <TableCell colSpan="11" align="center">
+                <TableCell align="center">
                 {/* <FormControl required className={classes.formControl}>
                   <InputLabel htmlFor="onlyYear-native-required">onlyYear</InputLabel>
                   <Select
@@ -462,6 +510,8 @@ class App extends React.Component{
                   </Select>
                   <FormHelperText>Required</FormHelperText>
                 </FormControl>
+                </TableCell>
+                <TableCell >
                 <FormControl required className={classes.formControl}>
                   <InputLabel htmlFor="month-native-required">month</InputLabel>
                   <Select
@@ -489,6 +539,8 @@ class App extends React.Component{
                   </Select>
                   <FormHelperText>Required</FormHelperText>
                 </FormControl>
+                </TableCell>
+                <TableCell >
                 <FormControl required className={classes.formControl}>
                   <InputLabel htmlFor="day-native-required">day</InputLabel>
                   <Select
@@ -536,11 +588,28 @@ class App extends React.Component{
                   <FormHelperText>Required</FormHelperText>
                 </FormControl>
                 {/* <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/> */}
-                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerTotal}>
-                    합계
+                
+                </TableCell>
+                
+                <TableCell>
+                  <TextField  label="지출" type="text" name="spending" value={this.state.spending}  onChange={this.handleValueChange}/>
+                </TableCell>
+                <TableCell>
+                  <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
+                </TableCell>
+                <TableCell>
+                  <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
+                </TableCell>
+                <TableCell>
+                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
+                  저장
                 </Button>
                 </TableCell>
-
+                <TableCell>
+                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerTotal}>
+                  합계
+                  </Button>
+                </TableCell>
                   { this.state.card && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell> : ''}
                   { this.state.cash && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>현금 : {this.state.cash}</TableCell> : ''}
                   { this.state.account && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>계좌 : {this.state.account}</TableCell> : ''}
