@@ -164,9 +164,9 @@ class App extends React.Component{
       // day:'',
       today: '',
       score:0,
-      // total:0,
-      // cash:0,
-      // card:0,
+      total:0,
+      cash:0,
+      card:0,
       account:0,
       position:'',
       spending:'',
@@ -184,7 +184,7 @@ class App extends React.Component{
       .then(()=>{
         this.setDate();
         this.renderToday();
-        this.reducerTotal();
+        // this.reducerTotal();
       })
   }
 
@@ -328,13 +328,23 @@ class App extends React.Component{
     let resData = await res
     let body = await resData.json()
     
-    body.map((c)=>{
-      this.setState({
-        spending:c.spending,
-        take:c.take,
-        balance:c.balance,
+    if(!this.emptyCheck(this.state.year)){
+      alert('연도를 입력해주세요')
+    } else if (!this.emptyCheck(this.state.month)){
+      alert('월을 입력해주세요')
+    } else if (!this.emptyCheck(this.state.day)){
+      alert('일을 입력해주세요')
+    } else {
+      body.map((c)=>{
+        this.setState({
+          spending:c.spending,
+          take:c.take,
+          balance:c.balance,
+        })
       })
-    })
+    }
+
+    
   }
 
   reducerTotal = () => {
@@ -400,7 +410,7 @@ class App extends React.Component{
           return c.createdDate.indexOf(this.state.searchKeyword) > -1 || c.name.indexOf(this.state.searchKeyword) > -1 ;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
         })
       } else {
         
@@ -408,7 +418,7 @@ class App extends React.Component{
           return c.createdDate.indexOf(this.state.searchKeyword) > -1;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
         })
       }
     }
@@ -627,10 +637,10 @@ class App extends React.Component{
                     합계
                   </Button>
                 </TableCell>
-                  { this.state.card && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell> : ''}
-                  { this.state.cash && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>현금 : {this.state.cash}</TableCell> : ''}
-                  { this.state.account && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>계좌 : {this.state.account}</TableCell> : ''}
-                  { this.state.total && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>총 금액 : {this.state.total}</TableCell> : ''} 
+                  { this.state.card && this.state.position === 'owner' ? <TableCell >카드 : {this.state.card}</TableCell> : ''}
+                  { this.state.cash && this.state.position === 'owner' ? <TableCell >현금 : {this.state.cash}</TableCell> : ''}
+                  { this.state.account && this.state.position === 'owner' ? <TableCell >계좌 : {this.state.account}</TableCell> : ''}
+                  { this.state.total && this.state.position === 'owner' ? <TableCell >총 금액 : {this.state.total}</TableCell> : ''} 
               </TableRow>
               </TableBody>
         </Table>
