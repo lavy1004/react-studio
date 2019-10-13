@@ -58,7 +58,7 @@ const styles= theme =>({
     fontSize:'1.0rem'
   },
   td: {
-    maxWidth: 64
+    maxWidth: 64,
   },
   grow: {
     flexGrow: 1,
@@ -159,14 +159,14 @@ class App extends React.Component{
       completed: 0,
       show: false,
       onlyYear:'',
-      year:'',
-      month:'',
-      day:'',
+      // year:'',
+      // month:'',
+      // day:'',
       today: '',
       score:0,
-      total:0,
-      cash:0,
-      card:0,
+      // total:0,
+      // cash:0,
+      // card:0,
       account:0,
       position:'',
       spending:'',
@@ -179,6 +179,7 @@ class App extends React.Component{
       .then(() => {this.substringDate()})
       .then(()=>{
         window.localStorage.setItem('store', JSON.stringify(this.state.customers))
+        this.setState({position: window.sessionStorage.getItem('POSITION')})
       })
       .then(()=>{
         this.setDate();
@@ -218,15 +219,23 @@ class App extends React.Component{
     let dd = this.state.day
     const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate';
 
-    const params = {
-      spending: this.state.spending,
-      take: this.state.take,
-      balance: this.state.balance,
-      admin_id: sessionStorage.getItem('id'),
-      selectedDate: yyyy+'-'+mm+'-'+dd
-    }
+    if(!this.emptyCheck(this.state.year)){
+      alert('연도를 입력해주세요')
+    } else if (!this.emptyCheck(this.state.month)){
+      alert('월을 입력해주세요')
+    } else if (!this.emptyCheck(this.state.day)){
+      alert('일을 입력해주세요')
+    } else {
+      const params = {
+        spending: this.state.spending,
+        take: this.state.take,
+        balance: this.state.balance,
+        admin_id: sessionStorage.getItem('id'),
+        selectedDate: yyyy+'-'+mm+'-'+dd
+      }
 
-    return post(url, params)
+      return post(url, params)
+    }
   }
 
   progress = () => {
@@ -247,6 +256,14 @@ class App extends React.Component{
     })
   }
 
+
+  emptyCheck = ( val ) => {
+    if (val === '' || val === null || val === undefined) {
+      return false
+    } else {
+      return true
+    }
+  }
   // today = () => {
   //   let current = new Date();
   //   let yyyy = current.getFullYear();
@@ -307,14 +324,7 @@ class App extends React.Component{
     let mm = this.state.month
     let dd = this.state.day
     
-    // let res = await Axios.get('api/calculate',  
-    //   {
-    //   params : {
-    //     selectedDate: yyyy + '-' + mm + '-' + dd
-    //   }
-    // })
     let res = await fetch(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate?selectedDate=${yyyy+'-'+mm+'-'+dd}`)
-
     let resData = await res
     let body = await resData.json()
     
@@ -368,8 +378,8 @@ class App extends React.Component{
       return acc + cur
     },0)
 
-    this.searchCalc().
-      then()
+    // this.searchCalc().
+    //   then()
     
     this.setState({
       show: true,
@@ -379,6 +389,9 @@ class App extends React.Component{
 
   render() {
 
+    const {classes} = this.props;
+    const cellList = ["이미지","성명","전화번호","이메일","상품내용","금액","결제수단","메모란","날짜","설정"]
+
     const filteredComponents =  (data) =>{
       if(this.state.searchKeyword) { 
         let data = JSON.parse(localStorage.getItem('store'))
@@ -387,7 +400,7 @@ class App extends React.Component{
           return c.createdDate.indexOf(this.state.searchKeyword) > -1 || c.name.indexOf(this.state.searchKeyword) > -1 ;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
         })
       } else {
         
@@ -395,13 +408,12 @@ class App extends React.Component{
           return c.createdDate.indexOf(this.state.searchKeyword) > -1;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
         })
       }
     }
 
-  const {classes} = this.props;
-  const cellList = ["번호","이미지","성명","전화번호","이메일","상품내용","금액","결제수단","메모란","날짜","설정"]
+ 
 
 
   return (
@@ -601,13 +613,18 @@ class App extends React.Component{
                   <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
                 </TableCell>
                 <TableCell>
-                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
-                  저장
-                </Button>
+                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
+                    저장
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.searchCalc}>
+                    조회
+                  </Button>
                 </TableCell>
                 <TableCell>
                   <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerTotal}>
-                  합계
+                    합계
                   </Button>
                 </TableCell>
                   { this.state.card && this.state.position === 'owner' ? <TableCell className={classes.mgr20}>카드 : {this.state.card}</TableCell> : ''}
