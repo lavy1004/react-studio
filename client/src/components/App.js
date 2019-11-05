@@ -475,7 +475,7 @@ class App extends React.Component{
               aria-haspopup="true"
               color="inherit"
             >
-              <Link to="/mypage" style={{textDecoration: 'none', color:'#fff'}}><AccountCircle /></Link>
+              <AccountCircle />
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
