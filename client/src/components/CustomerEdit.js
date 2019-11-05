@@ -45,7 +45,7 @@ class CustomerEdit extends React.Component {
             payment: '',
             note: '',
             admin_id: '',
-            fileName: '',
+            // fileName: '',
             open: false
         }
     }
@@ -71,10 +71,8 @@ class CustomerEdit extends React.Component {
         } else if(!this.emptyCheck(this.state.contents)) {
             alert('상품내용을 입력해주세요')
         } else {
-            alert('성공')
             this.editCustomer(id)
             .then((response) => {
-                console.log(response.data)
             this.props.stateRefresh();
             })
             this.setState({
@@ -87,18 +85,18 @@ class CustomerEdit extends React.Component {
                 payment: '',
                 note: '',
                 admin_id: '',
-                fileName: '',
+                // fileName: '',
                 open: false
             })
         }
         
     }
-    handleFileChange = (e) => {
-        this.setState({
-            file: e.target.files[0],
-            fileName: e.target.value
-        })
-    }
+    // handleFileChange = (e) => {
+    //     this.setState({
+    //         file: e.target.files[0],
+    //         fileName: e.target.value
+    //     })
+    // }
     handleValueChange = (e) => {
         let nextState = {};
         nextState[e.target.name] = e.target.value;
@@ -106,7 +104,6 @@ class CustomerEdit extends React.Component {
     }
 
     handleValueChangeRdo = (e) =>{
-        console.log(e.target)
         let nextState = {};
         nextState[e.target.name] = e.target.value;
         this.setState(nextState)
@@ -122,17 +119,27 @@ class CustomerEdit extends React.Component {
 
     editCustomer = (id) => {
         const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers/' + id;
-        const formData = new FormData();
+        const params = {
+            name : this.state.userName,
+            contents : this.state.contents,
+            phone : this.state.phone,
+            email : this.state.email,
+            price : this.state.price,
+            payment : this.state.payment,
+            note : this.state.note,
+            admin_id : this.state.admin_id,
+        }
+        // const formData = new FormData();
 
-        formData.append('image', this.state.file)
-        formData.append('name', this.state.userName)
-        formData.append('contents', this.state.contents)
-        formData.append('phone', this.state.phone)
-        formData.append('email', this.state.email)
-        formData.append('price', this.state.price)
-        formData.append('payment', this.state.payment)
-        formData.append('note', this.state.note)
-        formData.append('admin_id', this.state.admin_id)
+        // formData.append('image', this.state.file)
+        // formData.append('name', this.state.userName)
+        // formData.append('contents', this.state.contents)
+        // formData.append('phone', this.state.phone)
+        // formData.append('email', this.state.email)
+        // formData.append('price', this.state.price)
+        // formData.append('payment', this.state.payment)
+        // formData.append('note', this.state.note)
+        // formData.append('admin_id', this.state.admin_id)
 
         // if( this.state.file === '') {
         //     console.log(this.state.file)
@@ -144,12 +151,12 @@ class CustomerEdit extends React.Component {
         
     
     
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        }
-        return put(url, formData, config)
+        // const config = {
+        //     headers: {
+        //         'content-type': 'multipart/form-data'
+        //     }
+        // }
+        return put(url, params)
     }
 
 
@@ -164,7 +171,6 @@ class CustomerEdit extends React.Component {
             let filterData = StoreData.filter((c)=>{
                 return c.id === id
             })
-            console.log(filterData[0].image)
             this.setState({
                 admin_id: data,
                 userName: filterData[0].name,
@@ -174,7 +180,7 @@ class CustomerEdit extends React.Component {
                 price: filterData[0].price,
                 payment: filterData[0].payment,
                 note: filterData[0].note,
-                fileName: '',
+                // fileName: '',
                 // fileName: filterData[0].image,
                 open: true
             })
@@ -200,7 +206,7 @@ class CustomerEdit extends React.Component {
             payment: '',
             note: '',
             admin_id: '',
-            fileName: '',
+            // fileName: '',
             open: false
         })
     }
@@ -224,12 +230,12 @@ class CustomerEdit extends React.Component {
                 <Dialog open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle> 고객 수정 </DialogTitle>
                     <DialogContent>
-                        <input className={classes.hidden} accept="image/*" id="raised-button-file" type='file' file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange}/>
-                        <label htmlFor="raised-button-file">
+                        {/* <input className={classes.hidden} accept="image/*" id="raised-button-file" type='file' file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange}/> */}
+                        {/* <label htmlFor="raised-button-file">
                             <Button variant="contained" color="primary" component="span" name="file">
                                 {this.state.fileName === "" ? "프로필이미지선택" : this.state.fileName}
                             </Button>
-                        </label>
+                        </label> */}
                         <input className={classes.hidden} readOnly id="admin_id" type='text' value={this.state.admin_id} />
                         <TextField className={classes.wid100} required label="이름" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} required label="상품내용" type="text" name="contents" value={this.state.contents}  onChange={this.handleValueChange}/>

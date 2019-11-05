@@ -13,6 +13,14 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
+import TableCell from '@material-ui/core/TableCell';
+
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
+
 
 const styles = theme => ({
     hidden: {
@@ -20,6 +28,12 @@ const styles = theme => ({
     },
     wid100: {
         width: 100 + '%'
+    },
+    wid02: {
+        width: `185px`
+    },
+    calc02: {
+        width: `30%`
     },
     root: {
     color: green[400],
@@ -36,16 +50,16 @@ class CustomerAdd extends React.Component {
         super(props);
 
         this.state = {
-            file: null,
             userName: '',
             contents: '',
             phone: '',
             email: '',
+            emailChoice: '',
             price: '',
             payment: '',
             note: '',
             admin_id: '',
-            fileName: '',
+            // fileName: '',
             open: false
         }
     }
@@ -73,34 +87,33 @@ class CustomerAdd extends React.Component {
         } else if (!this.emptyCheck(this.state.payment)) {
             alert('결제수단을 선택해주세요')
         }else {
-            alert('등록이 완료되었습니다')
             this.addCustomer()
             .then((response) => {
-                console.log(response.data)
+               
             this.props.stateRefresh();
             })
             this.setState({
-                file: null,
                 userName: '',
                 contents: '',
                 phone: '',
                 email: '',
+                emailChoice:'',
                 price: '',
                 payment: '',
                 note: '',
                 admin_id: '',
-                fileName: '',
+                // fileName: '',
                 open: false
             })
         }
         
     }
-    handleFileChange = (e) => {
-        this.setState({
-            file: e.target.files[0],
-            fileName: e.target.value
-        })
-    }
+    // handleFileChange = (e) => {
+    //     this.setState({
+    //         file: e.target.files[0],
+    //         fileName: e.target.value
+    //     })
+    // }
     handleValueChange = (e) => {
         let nextState = {};
         nextState[e.target.name] = e.target.value;
@@ -123,17 +136,26 @@ class CustomerAdd extends React.Component {
 
     addCustomer = () =>{
         const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers';
-        const formData = new FormData();
-
-        formData.append('image', this.state.file)
-        formData.append('name', this.state.userName)
-        formData.append('contents', this.state.contents)
-        formData.append('phone', this.state.phone)
-        formData.append('email', this.state.email)
-        formData.append('price', this.state.price)
-        formData.append('payment', this.state.payment)
-        formData.append('note', this.state.note)
-        formData.append('admin_id', this.state.admin_id)
+        // const formData = new FormData();
+        const params = {
+            name : this.state.userName,
+            contents : this.state.contents,
+            phone : this.state.phone,
+            email : this.state.email,
+            emailChoice: this.state.emailChoice,
+            price : this.state.price,
+            payment : this.state.payment,
+            note : this.state.note,
+            admin_id : this.state.admin_id,
+        }
+        // formData.append('name', this.state.userName)
+        // formData.append('contents', this.state.contents)
+        // formData.append('phone', this.state.phone)
+        // formData.append('email', this.state.email)
+        // formData.append('price', this.state.price)
+        // formData.append('payment', this.state.payment)
+        // formData.append('note', this.state.note)
+        // formData.append('admin_id', this.state.admin_id)
 
         // if( this.state.file === '') {
         //     console.log(this.state.file)
@@ -145,12 +167,12 @@ class CustomerAdd extends React.Component {
         
     
     
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        }
-        return post(url, formData, config)
+        // const config = {
+        //     headers: {
+        //         'content-type': 'multipart/form-data'
+        //     }
+        // }
+        return post(url, params )
     }
 
 
@@ -178,16 +200,16 @@ class CustomerAdd extends React.Component {
 
     handleClose = () => {
         this.setState({
-            file: null,
             userName: '',
             contents: '',
             phone: '',
             email: '',
+            emailChoice: '',
             price: '',
             payment: '',
             note: '',
             admin_id: '',
-            fileName: '',
+            // fileName: '',
             open: false
         })
     }
@@ -197,7 +219,6 @@ class CustomerAdd extends React.Component {
         this.setState({
             admin_id : data
         })
-        console.log(data)
     }
 
     render () { //classes 이거 왜 render 안에서하는거지
@@ -211,17 +232,40 @@ class CustomerAdd extends React.Component {
                 <Dialog open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle> 고객 추가 </DialogTitle>
                     <DialogContent>
-                        <input className={classes.hidden} accept="image/*" id="raised-button-file" type='file' file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange}/>
+                        {/* <input className={classes.hidden} accept="image/*" id="raised-button-file" type='file' file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange}/>
                         <label htmlFor="raised-button-file">
                             <Button variant="contained" color="primary" component="span" name="file">
                                 {this.state.fileName === "" ? "프로필이미지선택" : this.state.fileName}
                             </Button>
-                        </label>
+                        </label> */}
                         <input className={classes.hidden} readOnly id="admin_id" type='text' value={this.state.admin_id} />
                         <TextField className={classes.wid100} required label="이름" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} required label="상품내용" type="text" name="contents" value={this.state.contents}  onChange={this.handleValueChange}/>
                         <TextField className={classes.wid100} label="전화번호" type="text" name="phone" value={this.state.phone}  onChange={this.handleValueChange}/>
-                        <TextField className={classes.wid100} label="이메일" type="text" name="email" value={this.state.email}  onChange={this.handleValueChange}/>
+                        
+                        <TextField className={classes.calc02} label="이메일" type="text" name="email" value={this.state.email}  onChange={this.handleValueChange}/>
+                        <span style={{ verticalAlign: 'bottom', marginRight:10, marginLeft:10}}>@</span>
+                        <TextField className={classes.calc02} label="이메일" type="text" name="emailChoice" value={this.state.emailChoice}  onChange={this.handleValueChange}/>
+                        <FormControl required className={classes.formControl}>
+                        <InputLabel htmlFor="day-native-required">emailChoice</InputLabel>
+                            <Select
+                                className={classes.wid02}
+                                native
+                                value={this.state.emailChoice}
+                                onChange={this.handleValueChange}
+                                name="emailChoice"
+                                inputProps={{
+                                    id: 'day-native-required',
+                                }}
+                            >
+                                <option value="" />
+                                <option value={''}>직접입력</option>
+                                <option value={'naver.com'} selected>naver.com</option>
+                                <option value={'hanmail.net'}>hanmail.net</option>
+                                <option value={'gmail.com'}>gmail.com</option>
+                                <option value={'snu.ac.kr'}>snu.ac.kr</option>
+                            </Select>
+                        </FormControl>
                         <TextField className={classes.wid100} label="금액" type="text" name="price" value={this.state.price}  onChange={this.handleValueChange}/>
                         <RadioGroup aria-label="position" name="position" required row>
                             <FormControlLabel

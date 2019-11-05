@@ -25,7 +25,7 @@ class Customer extends React.Component{
 
         return (
             <TableRow> 
-                <TableCell className={classes.tableCell} ><img className={classes.Max} src={this.props.image} alt={'고객이미지'}/></TableCell>
+                {/* <TableCell className={classes.tableCell} ><img className={classes.Max} src={this.props.image} alt={'고객이미지'}/></TableCell> */}
                 <TableCell className={classes.tableCell} >{this.props.name}</TableCell>
                 <TableCell className={classes.tableCell} >{this.props.phone}</TableCell>
                 <TableCell className={classes.tableCell} >{this.props.email}</TableCell>

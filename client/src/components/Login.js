@@ -31,7 +31,6 @@ class Login extends React.Component{
             password: this.state.password
         })
         
-        console.log(result.data)
         if(result.data.loginresult === true) { // 서버에서 로그인한지 않한지 알려주는 값으로 올려주는값
             this.props.onLogin();
             // this.props.history.push('/');

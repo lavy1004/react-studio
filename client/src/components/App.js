@@ -11,7 +11,8 @@ import { withStyles} from '@material-ui/core/styles'
 import { TableRow } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
-import Axios, { post } from 'axios'
+import { post } from 'axios'
+import { observer } from 'mobx-react';
 // import Menu from '@material-ui/core/Menu';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -24,15 +25,12 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-
 import Button from '@material-ui/core/Button'
-
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+
 
 const styles= theme =>({
   root: {
@@ -75,7 +73,7 @@ const styles= theme =>({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    
+    border: `1px solid`,
     marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '100%',
@@ -125,6 +123,7 @@ const styles= theme =>({
   },
 })
 
+@observer
 class App extends React.Component{
   constructor(props) {
     super(props);
@@ -159,9 +158,9 @@ class App extends React.Component{
       completed: 0,
       show: false,
       onlyYear:'',
-      // year:'',
-      // month:'',
-      // day:'',
+      year:'',
+      month:'',
+      day:'',
       today: '',
       score:0,
       total:0,
@@ -184,13 +183,13 @@ class App extends React.Component{
       .then(()=>{
         this.setDate();
         this.renderToday();
-        // this.reducerTotal();
+        this.reducerTotal();
       })
   }
 
   componentDidMount() {
     this.timer = setInterval(this.progress, 20)
-    
+
     this.callApi()
       .then(res =>this.setState({customers: res}))
       .then(() => {this.substringDate()})
@@ -204,7 +203,6 @@ class App extends React.Component{
         this.reducerTotal();
       })
   }
-  
   //함수표현식인데
   callApi = async () => {
     const data = await sessionStorage.getItem('id');
@@ -218,24 +216,33 @@ class App extends React.Component{
     let mm = this.state.month
     let dd = this.state.day
     const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate';
+    console.log(dd)
+    // if(!this.emptyCheck(this.state.year)){
+    //   alert('연도를 입력해주세요')
+    // } else if (!this.emptyCheck(this.state.month)){
+    //   alert('월을 입력해주세요')
+    // } else if (!this.emptyCheck(this.state.day)){
+    //   alert('일을 입력해주세요')
+    // } else {
+    //   const params = {
+    //     spending: this.state.spending,
+    //     take: this.state.take,
+    //     balance: this.state.balance,
+    //     admin_id: sessionStorage.getItem('id'),
+    //     selectedDate: yyyy+'-'+mm+'-'+dd
+    //   }
 
-    if(!this.emptyCheck(this.state.year)){
-      alert('연도를 입력해주세요')
-    } else if (!this.emptyCheck(this.state.month)){
-      alert('월을 입력해주세요')
-    } else if (!this.emptyCheck(this.state.day)){
-      alert('일을 입력해주세요')
-    } else {
-      const params = {
-        spending: this.state.spending,
-        take: this.state.take,
-        balance: this.state.balance,
-        admin_id: sessionStorage.getItem('id'),
-        selectedDate: yyyy+'-'+mm+'-'+dd
-      }
-
-      return post(url, params)
+    //   return post(url, params)
+    // }
+    const params = {
+      spending: this.state.spending,
+      take: this.state.take,
+      balance: this.state.balance,
+      admin_id: sessionStorage.getItem('id'),
+      selectedDate: yyyy+'-'+mm+'-'+dd
     }
+
+    return post(url, params)
   }
 
   progress = () => {
@@ -274,15 +281,21 @@ class App extends React.Component{
   // }
   setDate = (newDate) => {
     const date = newDate || new Date();
-    let yyyy = date.getFullYear();
+    let yyyy = String(date.getFullYear());
     let mm = String(date.getMonth()+1).padStart(2,'0')
     let dd = String(date.getDate()).padStart(2,'0');
 
-    this.setState(()=>{
-      return {
-        selectedDate:yyyy + "-" + mm + "-" + dd
-      } 
-  });
+
+    this.state.selectedDate =  yyyy+'-'+mm+'-'+dd
+    this.state.year = yyyy
+    this.state.month = mm
+    this.state.day = dd
+    // this.setState({
+    //   selectedDate : yyyy+'-'+mm+'-'+dd,
+    //   year: yyyy,
+    //   month: mm,
+    //   day: dd
+    // });
   };
 
   renderToday = () => {
@@ -296,27 +309,27 @@ class App extends React.Component{
   }
 
   getPreviousDate = () => {
-    const { selectedDate } = this.state
 
-    const currentDayInMilli = new Date(selectedDate).getTime()
+    const currentDayInMilli = new Date(this.state.selectedDate).getTime()
     const oneDay = 1000 * 60 *60 *24
     const previousDayInMilli = currentDayInMilli - oneDay
     const previousDate = new Date(previousDayInMilli)
 
     this.setDate(previousDate)
     this.renderToday()
+    this.reducerTotal()
   }
 
   getNextDate = () => {
-    const { selectedDate } = this.state
 
-    const currentDayInMilli = new Date(selectedDate).getTime()
+    const currentDayInMilli = new Date(this.state.selectedDate).getTime()
     const oneDay = 1000 * 60 *60 *24
     const nextDayInMilli = currentDayInMilli + oneDay
     const nextDate = new Date(nextDayInMilli)
 
     this.setDate(nextDate)
     this.renderToday()
+    this.reducerTotal()
   }
 
   searchCalc = async () => {
@@ -328,22 +341,13 @@ class App extends React.Component{
     let resData = await res
     let body = await resData.json()
     
-    if(!this.emptyCheck(this.state.year)){
-      alert('연도를 입력해주세요')
-    } else if (!this.emptyCheck(this.state.month)){
-      alert('월을 입력해주세요')
-    } else if (!this.emptyCheck(this.state.day)){
-      alert('일을 입력해주세요')
-    } else {
-      body.map((c)=>{
-        this.setState({
-          spending:c.spending,
-          take:c.take,
-          balance:c.balance,
-        })
+    body.map((c)=>{
+      this.setState({
+        spending:c.spending,
+        take:c.take,
+        balance:c.balance,
       })
-    }
-
+    })
     
   }
 
@@ -357,10 +361,17 @@ class App extends React.Component{
     this.state.cash = ''
     this.state.account = ''
 
-    let price = data.filter((c) => {
-      return c.createdDate.substring(0,4).indexOf(this.state.year) > -1 && c.createdDate.substring(5,7).indexOf(this.state.month) > -1 && c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
+    // let price = data.filter((c) => {
+    //   return c.createdDate.substring(0,4).indexOf(this.state.year) > -1 && c.createdDate.substring(5,7).indexOf(this.state.month) > -1 && c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
+    // })
+    let todayPrice = data.filter((c)=>{
+      console.log(this.state.day)
+      return c.createdDate.substring(0,4) === this.state.year && c.createdDate.substring(5,7) === this.state.month && c.createdDate.substring(8,10) === this.state.day
     })
-    let groupPrice = price.filter((c)=>{
+
+    console.log(todayPrice)
+
+    todayPrice.filter((c)=>{
         if(c.payment === '현금'){
           cash.push(c.price)
           this.state.cash = cash.reduce((acc, cur, i)=>{
@@ -376,11 +387,10 @@ class App extends React.Component{
           this.state.account = account.reduce((acc, cur, i)=>{
               return acc + cur
           },0)
-        }
-        
+        }       
     })
     
-    price.map((c)=>{
+    todayPrice.map((c)=>{
       total.push(c.price)
     })
 
@@ -388,8 +398,7 @@ class App extends React.Component{
       return acc + cur
     },0)
 
-    // this.searchCalc().
-    //   then()
+    
     
     this.setState({
       show: true,
@@ -400,7 +409,7 @@ class App extends React.Component{
   render() {
 
     const {classes} = this.props;
-    const cellList = ["이미지","성명","전화번호","이메일","상품내용","금액","결제수단","메모란","날짜","설정"]
+    const cellList = ["성명","전화번호","이메일","상품내용","금액","결제수단","메모란","날짜","설정"]
 
     const filteredComponents =  (data) =>{
       if(this.state.searchKeyword) { 
@@ -410,7 +419,7 @@ class App extends React.Component{
           return c.createdDate.indexOf(this.state.searchKeyword) > -1 || c.name.indexOf(this.state.searchKeyword) > -1 ;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
         })
       } else {
         
@@ -418,7 +427,7 @@ class App extends React.Component{
           return c.createdDate.indexOf(this.state.searchKeyword) > -1;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
         })
       }
     }
@@ -446,7 +455,6 @@ class App extends React.Component{
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="검색하기(2019-09-21)"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -459,12 +467,8 @@ class App extends React.Component{
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton color="inherit">
-              <NavigateBeforeIcon onClick={this.getPreviousDate}/>
-            </IconButton>
-            {/* <IconButton  color="inherit">
-              <NavigateNextIcon onClick={this.getNextDate}/>
-            </IconButton> */}
+            <button style={{background:'gold',color:'white'}} onClick={this.getPreviousDate}>이전</button>
+            <button style={{background:'gold',color:'white'}} onClick={this.getNextDate}>다음</button>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -491,157 +495,7 @@ class App extends React.Component{
     <Paper className={classes.paper}>
       <Table className={classes.table}>
           <TableBody>
-              <TableRow>
-                <TableCell align="center">
-                {/* <FormControl required className={classes.formControl}>
-                  <InputLabel htmlFor="onlyYear-native-required">onlyYear</InputLabel>
-                  <Select
-                    native
-                    value={this.state.onlyYear}
-                    onChange={this.handleValueChange}
-                    name="onlyYear"
-                    inputProps={{
-                      id: 'onlyYear-native-required',
-                    }}
-                  >
-                    <option value="" />
-                    <option value={2019}>2019</option>
-                    <option value={2020}>2020</option>
-                    <option value={2021}>2021</option>
-                  </Select>
-                  <FormHelperText>Required</FormHelperText>
-                </FormControl>
-                <Button className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerYear}>
-                    연 매출
-                </Button> */}
-                <FormControl required className={classes.formControl}>
-                  <InputLabel htmlFor="year-native-required">year</InputLabel>
-                  <Select
-                    native
-                    value={this.state.year}
-                    onChange={this.handleValueChange}
-                    name="year"
-                    inputProps={{
-                      id: 'year-native-required',
-                    }}
-                  >
-                    <option value="" />
-                    <option value={2019}>2019</option>
-                    <option value={2020}>2020</option>
-                    <option value={2021}>2021</option>
-                  </Select>
-                  <FormHelperText>Required</FormHelperText>
-                </FormControl>
-                </TableCell>
-                <TableCell >
-                <FormControl required className={classes.formControl}>
-                  <InputLabel htmlFor="month-native-required">month</InputLabel>
-                  <Select
-                    native
-                    value={this.state.month}
-                    onChange={this.handleValueChange}
-                    name="month"
-                    inputProps={{
-                      id: 'month-native-required',
-                    }}
-                  >
-                    <option value="" />
-                    <option value={'01'}>01</option>
-                    <option value={'02'}>02</option>
-                    <option value={'03'}>03</option>
-                    <option value={'04'}>04</option>
-                    <option value={'05'}>05</option>
-                    <option value={'06'}>06</option>
-                    <option value={'07'}>07</option>
-                    <option value={'08'}>08</option>
-                    <option value={'09'}>09</option>
-                    <option value={10}>10</option>
-                    <option value={11}>11</option>
-                    <option value={12}>12</option>
-                  </Select>
-                  <FormHelperText>Required</FormHelperText>
-                </FormControl>
-                </TableCell>
-                <TableCell >
-                <FormControl required className={classes.formControl}>
-                  <InputLabel htmlFor="day-native-required">day</InputLabel>
-                  <Select
-                    native
-                    value={this.state.day}
-                    onChange={this.handleValueChange}
-                    name="day"
-                    inputProps={{
-                      id: 'day-native-required',
-                    }}
-                  >
-                    <option value="" />
-                    <option value={1}>01</option>
-                    <option value={2}>02</option>
-                    <option value={3}>03</option>
-                    <option value={4}>04</option>
-                    <option value={5}>05</option>
-                    <option value={6}>06</option>
-                    <option value={7}>07</option>
-                    <option value={8}>08</option>
-                    <option value={9}>09</option>
-                    <option value={10}>10</option>
-                    <option value={11}>11</option>
-                    <option value={12}>12</option>
-                    <option value={13}>13</option>
-                    <option value={14}>14</option>
-                    <option value={15}>15</option>
-                    <option value={16}>16</option>
-                    <option value={17}>17</option>
-                    <option value={18}>18</option>
-                    <option value={19}>19</option>
-                    <option value={20}>20</option>
-                    <option value={21}>21</option>
-                    <option value={22}>22</option>
-                    <option value={23}>23</option>
-                    <option value={24}>24</option>
-                    <option value={25}>25</option>
-                    <option value={26}>26</option>
-                    <option value={27}>27</option>
-                    <option value={28}>28</option>
-                    <option value={29}>29</option>
-                    <option value={30}>30</option>
-                    <option value={31}>31</option>
-                  </Select>
-                  <FormHelperText>Required</FormHelperText>
-                </FormControl>
-                {/* <TextField className={classes.mgr20} variant="outlined" label="일" type="text" name="day" value={this.state.day} onChange={this.handleValueChange}/> */}
-                
-                </TableCell>
-                
-                <TableCell>
-                  <TextField  label="지출" type="text" name="spending" value={this.state.spending}  onChange={this.handleValueChange}/>
-                </TableCell>
-                <TableCell>
-                  <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
-                </TableCell>
-                <TableCell>
-                  <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
-                </TableCell>
-                <TableCell>
-                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
-                    저장
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.searchCalc}>
-                    조회
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.reducerTotal}>
-                    합계
-                  </Button>
-                </TableCell>
-                  { this.state.card && this.state.position === 'owner' ? <TableCell >카드 : {this.state.card}</TableCell> : ''}
-                  { this.state.cash && this.state.position === 'owner' ? <TableCell >현금 : {this.state.cash}</TableCell> : ''}
-                  { this.state.account && this.state.position === 'owner' ? <TableCell >계좌 : {this.state.account}</TableCell> : ''}
-                  { this.state.total && this.state.position === 'owner' ? <TableCell >총 금액 : {this.state.total}</TableCell> : ''} 
-              </TableRow>
+              
               </TableBody>
         </Table>
     </Paper>
@@ -666,6 +520,32 @@ class App extends React.Component{
               </TableCell>
             </TableRow>
             }
+              <TableRow>
+                  { this.state.card && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}} >카드 : {this.state.card}</TableCell> : ''}
+                  { this.state.cash && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>현금 : {this.state.cash}</TableCell> : ''}
+                  { this.state.account && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>계좌 : {this.state.account}</TableCell> : ''}
+                  { this.state.total && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>총 금액 : {this.state.total}</TableCell> : ''} 
+              
+                <TableCell>
+                  <TextField  label="지출" type="text" name="spending" value={this.state.spending}  onChange={this.handleValueChange}/>
+                </TableCell>
+                <TableCell>
+                  <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
+                </TableCell>
+                <TableCell>
+                  <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
+                </TableCell>
+                <TableCell>
+                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
+                    저장
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.searchCalc}>
+                    조회
+                  </Button>
+                </TableCell>
+              </TableRow>
         </TableBody>
       </Table>
     </Paper>

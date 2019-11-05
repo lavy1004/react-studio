@@ -8,6 +8,7 @@ class Test extends React.Component {
 
   componentDidMount() {
     this.setDate();
+    
   }
 
   setDate = (newDate) => {
@@ -16,6 +17,7 @@ class Test extends React.Component {
       selectedDate:
         date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
     });
+    console.log(this.state.selectedDate)
   };
 
   getPreviousDate = () => {

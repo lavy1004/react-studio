@@ -1,9 +1,13 @@
 const { injectBabelPlugin } = require('react-app-rewired');
+const { 
+  addDecoratorsLegacy, // decorator를 사용할 수 있도록 해주는 config
+  disableEsLint,
+  override,
+} = require("customize-cra");
 
-module.exports = function override(config) {
-  config = injectBabelPlugin(['@babel/plugin-proposal-decorators', {
-    "legacy": true
-  }], config);
-
-  return config;
+module.exports = {
+  webpack: override(
+      disableEsLint(),
+      addDecoratorsLegacy()
+  ),
 }

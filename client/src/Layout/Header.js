@@ -15,7 +15,6 @@ class Header extends React.Component {
                     {
                     logged ?
                     <ShortCut>
-                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/myboard'>test</Link></Button></Card>
                         <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/app'>리스트</Link></Button></Card>
                         <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to="/" onClick={onLogout}>로그아웃</Link></Button></Card>
                     </ShortCut> :
