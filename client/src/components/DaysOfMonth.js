@@ -26,7 +26,7 @@ class DaysOfMonth extends React.Component {
     render() {
       const month = this.props.monthData;
       const firstDayOfMonth = this.firstWeekdayOfMonth(
-        2017, month.id
+        2019, month.id
       ).toLowerCase();
       
       let daysCollection = [];

@@ -135,8 +135,22 @@ app.post('/api/signup', (req, res)=>{
     )
 })
 
+//
+app.get('/api/calculate/:id', (req, res)=>{
+    let sql = 'UPDATE CUSTOMER SET createdDate WHERE id = ?';
+    let params = [req.params.id];
+
+    connection.query(sql, params,
+        (err, rows, fields)=>{
+            res.send(rows)
+            console.log(rows)
+        }
+    )
+})
+
+//serachCalc 정산조회하기
 app.get('/api/calculate', (req, res)=>{
-    let sql = 'SELECT * FROM CALCULATE where createdDate = ? ';
+    let sql = 'SELECT * FROM CALCULATE WHERE createdDate = ? ';
     let selectedDate = req.query.selectedDate
 
     

@@ -471,98 +471,92 @@ class App extends React.Component{
             />
           </div>
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <IconButton
-                aria-label="이전"
+            <div className={classes.sectionDesktop}>
+              <IconButton
+                  aria-label="이전"
+                  color="inherit"
+                  onClick={this.getPreviousDate}
+                >
+                  <NavigateBeforeIcon />
+              </IconButton>
+              <IconButton
+                  aria-label="다음"
+                  color="inherit"
+                  onClick={this.getNextDate}
+                >
+                  <NavigateNextIcon />
+              </IconButton>
+              <Link style={{textDecoration: 'none', color:'#fff'}} to='/MyPage'>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-haspopup="true"
                 color="inherit"
-                onClick={this.getPreviousDate}
               >
-                <NavigateBeforeIcon />
-            </IconButton>
-            <IconButton
-                aria-label="다음"
+                <AccountCircle />
+              </IconButton>
+              </Link>
+            </div>
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-label="show more"
+                aria-haspopup="true"
                 color="inherit"
-                onClick={this.getNextDate}
               >
-                <NavigateNextIcon />
-            </IconButton>
-            <Link style={{textDecoration: 'none', color:'#fff'}} to='/MyPage'>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            </Link>
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+                <MoreIcon />
+              </IconButton>
+            </div>
+          
         </Toolbar>
       </AppBar>
       <div className={classes.menu}>
         <CustomerAdd stateRefresh={this.stateRefresh}/>
       </div>
-    <Paper className={classes.paper}>
-      <Table className={classes.table}>
-          <TableBody>
-              
-              </TableBody>
-        </Table>
-    </Paper>
-    <Paper className={classes.paper}>
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            {
-              cellList.map(c =>{ 
-              return <TableCell  key={c.id} className={classes.tableHead}>{c}</TableCell>
-              })
-            }
-          </TableRow>
-        </TableHead>
-        <TableBody>
-            {
-            this.state.customers ? 
-              filteredComponents(this.state.customers) : 
+      <Paper className={classes.paper}>
+        <Table className={classes.table}>
+          <TableHead>
             <TableRow>
-              <TableCell colSpan="11" align="center">
-                <CircularProgress className={classes.progress}  vlaue={this.state.completed} />
-              </TableCell>
+              {
+                cellList.map(c =>{ 
+                return <TableCell  key={c.id} className={classes.tableHead}>{c}</TableCell>
+                })
+              }
             </TableRow>
-            }
+          </TableHead>
+          <TableBody>
+              {
+              this.state.customers ? 
+                filteredComponents(this.state.customers) : 
               <TableRow>
-                  { this.state.card && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}} >카드 : {this.state.card}</TableCell> : ''}
-                  { this.state.cash && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>현금 : {this.state.cash}</TableCell> : ''}
-                  { this.state.account && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>계좌 : {this.state.account}</TableCell> : ''}
-                  { this.state.total && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>총 금액 : {this.state.total}</TableCell> : ''} 
-              
-                <TableCell>
-                  <TextField  label="지출" type="text" name="spending" value={this.state.spending}  onChange={this.handleValueChange}/>
-                </TableCell>
-                <TableCell>
-                  <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
-                </TableCell>
-                <TableCell>
-                  <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
-                </TableCell>
-                <TableCell>
-                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
-                    저장
-                  </Button>
+                <TableCell colSpan="11" align="center">
+                  <CircularProgress className={classes.progress}  vlaue={this.state.completed} />
                 </TableCell>
               </TableRow>
-        </TableBody>
-      </Table>
-    </Paper>
+              }
+                <TableRow>
+                    { this.state.card && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}} >카드 : {this.state.card}</TableCell> : ''}
+                    { this.state.cash && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>현금 : {this.state.cash}</TableCell> : ''}
+                    { this.state.account && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>계좌 : {this.state.account}</TableCell> : ''}
+                    { this.state.total && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>총 금액 : {this.state.total}</TableCell> : ''} 
+                
+                  <TableCell>
+                    <TextField  label="지출" type="text" name="spending" value={this.state.spending}  onChange={this.handleValueChange}/>
+                  </TableCell>
+                  <TableCell>
+                    <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
+                  </TableCell>
+                  <TableCell>
+                    <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
+                  </TableCell>
+                  <TableCell>
+                    <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
+                      저장
+                    </Button>
+                  </TableCell>
+                </TableRow>
+          </TableBody>
+        </Table>
+      </Paper>
     
     </div>
   );

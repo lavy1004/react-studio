@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { withStyles} from '@material-ui/core/styles'
 import DaysOfMonth from './DaysOfMonth'
 import DaysOfWeek from './DaysOfWeek'
+import { get } from 'axios'
 
 
 
@@ -18,7 +19,7 @@ const styles= theme =>({
   },
 })
 
-const Year = 2017
+const Year = 2019
 
 const Months = [
   { id: 0, name: "January", numberOfDays: 31},
@@ -40,10 +41,12 @@ class MyPage extends Component {
   constructor() {
     super();
     this.state = {
-      activeMonthIndex: 0
+      activeMonthIndex: 0,
+      calcList: []
     };
     this.updateMonthView = this.updateMonthView.bind(this);
   }
+
 
   drawMonthSelector() {
     let buttonCollection = [];
@@ -69,6 +72,20 @@ class MyPage extends Component {
   updateMonthView(event) {
     this.setState({ activeMonthIndex: event.target.value });
   }
+
+  componentDidMount() {
+    this.callApi()
+        .then(res =>this.setState({calcList: res}))
+    console.log(this.calcList)
+  }
+
+  callApi = async () => {
+    const data = await sessionStorage.getItem('id');
+    const response = await fetch(`/api/calculate/${data}`);
+    const body = await response.json();
+    return body 
+  }
+    
 
   render() {
 
