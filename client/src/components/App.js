@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import { post } from 'axios'
 import { observer } from 'mobx-react';
+
 // import Menu from '@material-ui/core/Menu';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -24,12 +25,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import Button from '@material-ui/core/Button'
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
 
 
 const styles= theme =>({
@@ -317,6 +320,7 @@ class App extends React.Component{
 
     this.setDate(previousDate)
     this.renderToday()
+    this.searchCalc()
     this.reducerTotal()
   }
 
@@ -329,6 +333,7 @@ class App extends React.Component{
 
     this.setDate(nextDate)
     this.renderToday()
+    this.searchCalc()
     this.reducerTotal()
   }
 
@@ -467,8 +472,21 @@ class App extends React.Component{
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <button style={{background:'gold',color:'white'}} onClick={this.getPreviousDate}>이전</button>
-            <button style={{background:'gold',color:'white'}} onClick={this.getNextDate}>다음</button>
+            <IconButton
+                aria-label="이전"
+                color="inherit"
+                onClick={this.getPreviousDate}
+              >
+                <NavigateBeforeIcon />
+            </IconButton>
+            <IconButton
+                aria-label="다음"
+                color="inherit"
+                onClick={this.getNextDate}
+              >
+                <NavigateNextIcon />
+            </IconButton>
+            <Link style={{textDecoration: 'none', color:'#fff'}} to='/MyPage'>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -477,6 +495,7 @@ class App extends React.Component{
             >
               <AccountCircle />
             </IconButton>
+            </Link>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
@@ -530,19 +549,14 @@ class App extends React.Component{
                   <TextField  label="지출" type="text" name="spending" value={this.state.spending}  onChange={this.handleValueChange}/>
                 </TableCell>
                 <TableCell>
-                  <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
+                  <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
                 </TableCell>
                 <TableCell>
-                  <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
+                  <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
                 </TableCell>
                 <TableCell>
                   <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
                     저장
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.searchCalc}>
-                    조회
                   </Button>
                 </TableCell>
               </TableRow>

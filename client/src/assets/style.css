@@ -1,0 +1,85 @@
+/*MyPage*/
+button,select {
+font-family: inherit;
+font-size: 10pt;
+border: none;
+background-color: gray;
+color: white;
+padding: 5px;
+font-weight: bold;
+box-sizing: border-box;
+    option {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    box-sizing: border-box;
+    display: block;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 25px;
+    }
+}
+
+h1 {
+margin: 0;
+padding: 0;
+line-height: 40pt;
+font-size: 20pt;
+max-width: 70%;
+float: left;
+}
+.month-selector {
+float: right;
+margin-right: 2%;
+margin-top: 10px;
+
+}
+.day-of-month,
+.day-of-week {
+padding: 5px;
+width: 14%;
+display: inline-block;
+box-sizing: border-box;
+}
+.weekdays {
+clear: both;
+}
+.day-of-week {
+font-size: 10pt;
+color: white;
+background-color: #333;
+}
+.day-of-month {
+border: 1px solid #eee;
+height: 90px;
+box-sizing: border-box;
+
+}
+.day-of-month:first-child{
+border-left: 2px solid #eee;
+}
+.first-day-sunday {
+margin-left: 0;
+}
+.first-day-monday {
+margin-left: 14%;
+}
+.first-day-tuesday {
+margin-left: 28%;
+}
+.first-day-wednesday {
+margin-left: 42%;
+}
+.first-day-thursday {
+margin-left: 56%;
+}
+.first-day-friday {
+margin-left: 70%;
+}
+.first-day-saturday {
+margin-left: 84%;
+}
+#Calendar {
+font-family: Verdana, Arial, Helvetica, Sans-serif;
+width: 100%;
+min-width: 700px;  
+}

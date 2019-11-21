@@ -15,13 +15,13 @@ class Header extends React.Component {
                     {
                     logged ?
                     <ShortCut>
-                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/app'>리스트</Link></Button></Card>
-                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to="/" onClick={onLogout}>로그아웃</Link></Button></Card>
+                        <Card><Link style={{textDecoration: 'none', color:'#fff'}} to='/app'><Button variant="contained" color="primary">리스트</Button></Link></Card>
+                        <Card><Link style={{textDecoration: 'none', color:'#fff'}} to="/" onClick={onLogout}><Button variant="contained" color="primary">로그아웃</Button></Link></Card>
                     </ShortCut> :
                     <ShortCut>
-                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/app'>리스트</Link></Button></Card>
-                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/login'>로그인</Link></Button></Card>  
-                        <Card><Button variant="contained" color="primary"><Link style={{textDecoration: 'none', color:'#fff'}} to='/join'>회원가입하기</Link></Button></Card>
+                        <Card><Link style={{textDecoration: 'none', color:'#fff'}} to='/app'><Button variant="contained" color="primary">리스트</Button></Link></Card>
+                        <Card><Link style={{textDecoration: 'none', color:'#fff'}} to='/login'><Button variant="contained" color="primary">로그인</Button></Link></Card>  
+                        <Card><Link style={{textDecoration: 'none', color:'#fff'}} to='/join'><Button variant="contained" color="primary">회원가입하기</Button></Link></Card>
                     </ShortCut>
                     }
                     <Logo>

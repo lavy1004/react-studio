@@ -79,7 +79,7 @@ class CustomerAdd extends React.Component {
         //         default:
         //             return null;
         //     }
-        // };
+        // });
         if(!this.emptyCheck(this.state.userName)) {
             alert('성함을 입력해주세요')
         } else if(!this.emptyCheck(this.state.contents)) {

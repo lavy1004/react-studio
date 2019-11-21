@@ -24,6 +24,11 @@ class Login extends React.Component{
     handlePasswordChange(e){
         this.setState({password:e.target.value})
     }
+    handleEnter = (e) => {
+        if(e.keyCode === 0){
+            this.signIn()
+        }
+    }
 
     signIn = async () =>{          
         const result = await axios.post('http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/signin', {
@@ -33,7 +38,6 @@ class Login extends React.Component{
         
         if(result.data.loginresult === true) { // 서버에서 로그인한지 않한지 알려주는 값으로 올려주는값
             this.props.onLogin();
-            // this.props.history.push('/');
             const logged = await this.setState({isLogin: true, position:result.data.position})
             
             const doLogin = await this.doLogin()
@@ -63,7 +67,7 @@ class Login extends React.Component{
                     <Card>
                         <TextField variant="outlined" label="ID" type="text" onChange={this.handleIdChange} id="inputId" className="form-control" placeholder="id" required autoFocus />
                     </Card>
-                    <Card><TextField variant="outlined" label="Password" type="password" onChange={this.handlePasswordChange} id="inputPassword" className="form-control" placeholder="Password" required /></Card>
+                    <Card><TextField variant="outlined" label="Password" type="password" onChange={this.handlePasswordChange} onKeyPress={this.handleEnter} id="inputPassword" className="form-control" placeholder="Password" required /></Card>
                     <Card2>
                         <Button onClick={this.signIn}   variant="contained" color="primary" type="button"> Login
                         </Button>
