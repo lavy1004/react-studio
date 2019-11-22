@@ -14,8 +14,6 @@ import TextField from '@material-ui/core/TextField'
 import { post } from 'axios'
 import { observer } from 'mobx-react';
 
-// import Menu from '@material-ui/core/Menu';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,8 +25,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-
 import Button from '@material-ui/core/Button'
+
+// import Menu from '@material-ui/core/Menu';
 // import InputLabel from '@material-ui/core/InputLabel';
 // import FormHelperText from '@material-ui/core/FormHelperText';
 // import FormControl from '@material-ui/core/FormControl';
@@ -146,7 +145,7 @@ class App extends React.Component{
       card:0,
       account:0,
       position:'',
-      spending:'',
+      spend:'',
       take:'',
       balance:'',
       searchKeyword: '' // 초기화
@@ -171,7 +170,7 @@ class App extends React.Component{
       card:0,
       account:0,
       position:'',
-      spending:'',
+      spend:'',
       take:'',
       balance:'',
       searchKeyword: ''
@@ -228,7 +227,7 @@ class App extends React.Component{
     //   alert('일을 입력해주세요')
     // } else {
     //   const params = {
-    //     spending: this.state.spending,
+    //     spend: this.state.spend,
     //     take: this.state.take,
     //     balance: this.state.balance,
     //     admin_id: sessionStorage.getItem('id'),
@@ -238,7 +237,7 @@ class App extends React.Component{
     //   return post(url, params)
     // }
     const params = {
-      spending: this.state.spending,
+      spend: this.state.spend,
       take: this.state.take,
       balance: this.state.balance,
       admin_id: sessionStorage.getItem('id'),
@@ -262,7 +261,7 @@ class App extends React.Component{
     let data = this.state.customers
 
     data.map((c)=>{
-      return c.createdDate = c.createdDate.substring(0,10)
+      return c.created_date = c.created_date.substring(0,10)
     })
   }
 
@@ -305,7 +304,7 @@ class App extends React.Component{
       
       let data = JSON.parse(localStorage.getItem('store'))
       let todayData = data.filter((c)=>{
-        return c.createdDate === this.state.selectedDate
+        return c.created_date === this.state.selectedDate
       })
       
       this.setState({customers: todayData}) 
@@ -348,7 +347,7 @@ class App extends React.Component{
     
     body.map((c)=>{
       this.setState({
-        spending:c.spending,
+        spend:c.spend,
         take:c.take,
         balance:c.balance,
       })
@@ -367,11 +366,11 @@ class App extends React.Component{
     this.state.account = ''
 
     // let price = data.filter((c) => {
-    //   return c.createdDate.substring(0,4).indexOf(this.state.year) > -1 && c.createdDate.substring(5,7).indexOf(this.state.month) > -1 && c.createdDate.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
+    //   return c.created_date.substring(0,4).indexOf(this.state.year) > -1 && c.created_date.substring(5,7).indexOf(this.state.month) > -1 && c.created_date.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
     // })
     let todayPrice = data.filter((c)=>{
       console.log(this.state.day)
-      return c.createdDate.substring(0,4) === this.state.year && c.createdDate.substring(5,7) === this.state.month && c.createdDate.substring(8,10) === this.state.day
+      return c.created_date.substring(0,4) === this.state.year && c.created_date.substring(5,7) === this.state.month && c.created_date.substring(8,10) === this.state.day
     })
 
     console.log(todayPrice)
@@ -421,18 +420,18 @@ class App extends React.Component{
         let data = JSON.parse(localStorage.getItem('store'))
 
         data = data.filter((c)=>{
-          return c.createdDate.indexOf(this.state.searchKeyword) > -1 || c.name.indexOf(this.state.searchKeyword) > -1 ;
+          return c.created_date.indexOf(this.state.searchKeyword) > -1 || c.name.indexOf(this.state.searchKeyword) > -1 ;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.customer_seq} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} created_date={c.created_date}/>
         })
       } else {
         
         data = data.filter((c)=>{
-          return c.createdDate.indexOf(this.state.searchKeyword) > -1;
+          return c.created_date.indexOf(this.state.searchKeyword) > -1;
         })
         return data.map((c)=>{
-          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} createdDate={c.createdDate}/>
+          return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.customer_seq} name={c.name} contents={c.contents} phone={c.phone} price={c.price} payment={c.payment} note={c.note} email={c.email} created_date={c.created_date}/>
         })
       }
     }
@@ -540,7 +539,7 @@ class App extends React.Component{
                     { this.state.total && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>총 금액 : {this.state.total}</TableCell> : ''} 
                 
                   <TableCell>
-                    <TextField  label="지출" type="text" name="spending" value={this.state.spending}  onChange={this.handleValueChange}/>
+                    <TextField  label="지출" type="text" name="spend" value={this.state.spend}  onChange={this.handleValueChange}/>
                   </TableCell>
                   <TableCell>
                     <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>

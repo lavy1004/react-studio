@@ -169,7 +169,7 @@ class CustomerEdit extends React.Component {
             const StoreData = JSON.parse(localStorage.getItem('store'))
 
             let filterData = StoreData.filter((c)=>{
-                return c.id === id
+                return c.customer_seq === id
             })
             this.setState({
                 admin_id: data,
