@@ -4,7 +4,8 @@ import { observer } from 'mobx-react';
 import { withStyles} from '@material-ui/core/styles'
 import DaysOfMonth from './DaysOfMonth'
 import DaysOfWeek from './DaysOfWeek'
-import { get } from 'axios'
+import Counter from './Counter'
+import ReactFlowPlayer from "react-flow-player";
 
 
 
@@ -101,6 +102,7 @@ class MyPage extends Component {
           <DaysOfMonth
             monthData={Months[this.state.activeMonthIndex]} year={Year}
           />
+          <Counter/>
       </div>
     );
   }
