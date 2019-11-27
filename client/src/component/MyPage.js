@@ -1,4 +1,3 @@
-// components/UserView.js
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { withStyles} from '@material-ui/core/styles'
@@ -6,6 +5,9 @@ import DaysOfMonth from './DaysOfMonth'
 import DaysOfWeek from './DaysOfWeek'
 import Counter from './Counter'
 import ReactFlowPlayer from "react-flow-player";
+import VideoView from "./VideoView";
+import Axios, { get } from "axios"
+import videos from '../assets/Clouds.mp4'
 
 
 
@@ -49,6 +51,7 @@ class MyPage extends Component {
   }
 
 
+
   drawMonthSelector() {
     let buttonCollection = [];
     let counter = 0;
@@ -76,17 +79,15 @@ class MyPage extends Component {
 
   componentDidMount() {
     this.callApi()
-        .then(res =>this.setState({calcList: res}))
-    console.log(this.calcList)
+        .then(res => console.log(res))
   }
-
+  
   callApi = async () => {
     const data = await sessionStorage.getItem('id');
-    const response = await fetch(`/api/calculate/${data}`);
-    const body = await response.json();
-    return body 
+    const response = await Axios.get(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate/${data}`)
+
+    return response 
   }
-    
 
   render() {
 
@@ -102,7 +103,28 @@ class MyPage extends Component {
           <DaysOfMonth
             monthData={Months[this.state.activeMonthIndex]} year={Year}
           />
-          <Counter/>
+          <br/>
+          <Counter />
+          <VideoView />
+          
+          <ReactFlowPlayer
+              playerInitScript="http://releases.flowplayer.org/7.2.1/flowplayer.min.js"
+              playerId="reactFlowPlayer"
+              sources={[
+                {
+                  type: "video/webm",
+                  src: videos
+                }
+              ]}
+              customButton={[
+                {
+                  component: <a id="custom-btn">Custom React Component</a>,
+                  class: "fp-controls > .fp-volume",
+                  id: "custom-btn",
+                  place: "before"
+                }
+              ]}
+            />
       </div>
     );
   }
