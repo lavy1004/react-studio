@@ -1112,3 +1112,44 @@ function NumberForm(OMoneyChs) {
 	return OMoneyChs;
 }
 
+
+
+//siteSize
+
+$(function(){
+    
+    $('.image-list .btn-detail').on('click', function(){
+        $(this).addClass('selected').parent().siblings().find('.btn-detail').removeClass('selected');
+    });
+
+});
+
+// 창 크기 변경시 left menu scroll update
+$(window).resize(function(){ $('.scroll-sidebar').perfectScrollbar('update'); });
+
+function windowOpen(url, title, width, height){
+    // 디바이스 종류 설정
+    // var pc_device = "win16|win32|win64|mac|macintel";
+    var $url = url;
+    var $title = title;
+    var $width = width;
+    var $height = height;
+
+    window.open(url, title, 'width='+ width +', height='+ height +', toolbar=no, menubar=no, scrollbars=no, resizable=yes');
+ 
+    // 접속한 디바이스 환경
+    // var this_device = navigator.platform;
+    // if ( this_device ) {
+    //     if ( pc_device.indexOf(navigator.platform.toLowerCase()) < 0 ) {
+            
+    //         window.open(url, title, 'width=840, height='+ height +', toolbar=no, menubar=no, scrollbars=no, resizable=yes');
+    //         alert(this_device);
+    //         // console.log(1);
+    //     } else {
+    //         window.open(url, title, 'width=840, height='+ height +', toolbar=no, menubar=no, scrollbars=no, resizable=yes');
+    //         // console.log(2);
+    //         alert(this_device);
+    //     }
+ 
+    // }
+}
