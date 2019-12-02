@@ -25,13 +25,14 @@ class Login extends React.Component{
         this.setState({password:e.target.value})
     }
     handleEnter = (e) => {
-        if(e.keyCode === 0){
+        console.log(e.charCode)
+        if(e.charCode === 13){
             this.signIn()
         }
     }
 
     signIn = async () =>{          
-        const result = await axios.post('http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/signin', {
+        const result = await axios.post('http://ec2-54-180-113-217.ap-northeast-2.compute.amazonaws.com:5000/signin', {
             id: this.state.id,
             password: this.state.password
         })

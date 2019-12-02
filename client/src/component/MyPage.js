@@ -79,15 +79,29 @@ class MyPage extends Component {
 
   componentDidMount() {
     this.callApi()
-        .then(res => console.log(res))
+    .then(res => {this.state.calcList = res})
+    .then(() => {
+      this.substringDate()
+      console.log(this.state.calcList)
+    })
   }
   
+  //함수표현식인데
   callApi = async () => {
     const data = await sessionStorage.getItem('id');
-    const response = await Axios.get(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate/${data}`)
-
-    return response 
+    const response = await fetch(`api/calculateAll/${data}`);
+    const body = await response.json();
+    return body 
   }
+
+  substringDate = () => {
+    let data = this.state.calcList
+
+    data.map((c)=>{
+      return c.created_date = c.created_date.substring(0,10)
+    })
+  }
+
 
   render() {
 
@@ -103,28 +117,6 @@ class MyPage extends Component {
           <DaysOfMonth
             monthData={Months[this.state.activeMonthIndex]} year={Year}
           />
-          <br/>
-          <Counter />
-          <VideoView />
-          
-          <ReactFlowPlayer
-              playerInitScript="http://releases.flowplayer.org/7.2.1/flowplayer.min.js"
-              playerId="reactFlowPlayer"
-              sources={[
-                {
-                  type: "video/webm",
-                  src: videos
-                }
-              ]}
-              customButton={[
-                {
-                  component: <a id="custom-btn">Custom React Component</a>,
-                  class: "fp-controls > .fp-volume",
-                  id: "custom-btn",
-                  place: "before"
-                }
-              ]}
-            />
       </div>
     );
   }

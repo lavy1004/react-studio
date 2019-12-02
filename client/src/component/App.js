@@ -203,12 +203,13 @@ class App extends React.Component{
         this.setDate();
         this.renderToday();
         this.reducerTotal();
+        this.searchCalc()
       })
   }
   //함수표현식인데
   callApi = async () => {
     const data = await sessionStorage.getItem('id');
-    const response = await fetch(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/customers/${data}`);
+    const response = await fetch(`http://ec2-54-180-113-217.ap-northeast-2.compute.amazonaws.com:5000/api/customers/${data}`);
     const body = await response.json();
     return body 
   }
@@ -217,7 +218,7 @@ class App extends React.Component{
     let yyyy = this.state.year
     let mm = this.state.month
     let dd = this.state.day
-    const url ='http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate';
+    const url ='http://ec2-54-180-113-217.ap-northeast-2.compute.amazonaws.com:5000/api/calculate';
     console.log(dd)
     // if(!this.emptyCheck(this.state.year)){
     //   alert('연도를 입력해주세요')
@@ -340,8 +341,9 @@ class App extends React.Component{
     let yyyy = this.state.year
     let mm = this.state.month
     let dd = this.state.day
-    
-    let res = await fetch(`http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000/api/calculate?selectedDate=${yyyy+'-'+mm+'-'+dd}`)
+    const data = await sessionStorage.getItem('id');
+    //fetch는 기본적으론 get방식
+    let res = await fetch(`http://ec2-54-180-113-217.ap-northeast-2.compute.amazonaws.com:5000/api/calculate?selectedDate=${yyyy+'-'+mm+'-'+dd}&adminId=${data}`)
     let resData = await res
     let body = await resData.json()
     
@@ -369,11 +371,8 @@ class App extends React.Component{
     //   return c.created_date.substring(0,4).indexOf(this.state.year) > -1 && c.created_date.substring(5,7).indexOf(this.state.month) > -1 && c.created_date.substring(8,10).indexOf(this.state.day) > -1; // 체이닝을 활용할것 ..!
     // })
     let todayPrice = data.filter((c)=>{
-      console.log(this.state.day)
       return c.created_date.substring(0,4) === this.state.year && c.created_date.substring(5,7) === this.state.month && c.created_date.substring(8,10) === this.state.day
     })
-
-    console.log(todayPrice)
 
     todayPrice.filter((c)=>{
         if(c.payment === '현금'){
@@ -471,6 +470,7 @@ class App extends React.Component{
           </div>
           <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
+            <span  style={{ height: 38+'px', lineHeight: 48+'px',marginRight: 5+'px'}}>{this.state.selectedDate}</span>
               <IconButton
                   aria-label="이전"
                   color="inherit"
@@ -513,7 +513,33 @@ class App extends React.Component{
       </div>
       <Paper className={classes.paper}>
         <Table className={classes.table}>
+            <TableRow>
+                { this.state.card  ? <TableCell style={{fontSize:24,textAlign:'center'}} >카드 : {this.state.card}</TableCell> : ''}
+                { this.state.cash  ? <TableCell style={{fontSize:24,textAlign:'center'}}>현금 : {this.state.cash}</TableCell> : ''}
+                { this.state.account  ? <TableCell style={{fontSize:24,textAlign:'center'}}>계좌 : {this.state.account}</TableCell> : ''}
+                { this.state.total  ? <TableCell style={{fontSize:24,textAlign:'center'}}>총 금액 : {this.state.total}</TableCell> : ''} 
+            
+              <TableCell>
+                <TextField  label="지출" type="text" name="spend" value={this.state.spend}  onChange={this.handleValueChange}/>
+              </TableCell>
+              <TableCell>
+                <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
+              </TableCell>
+              <TableCell>
+                <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
+              </TableCell>
+              <TableCell>
+                <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
+                  저장
+                </Button>
+              </TableCell>
+            </TableRow>
+          </Table>
+      </Paper>
+      <Paper className={classes.paper}>
+        <Table className={classes.table}>
           <TableHead>
+            
             <TableRow>
               {
                 cellList.map(c =>{ 
@@ -532,27 +558,6 @@ class App extends React.Component{
                 </TableCell>
               </TableRow>
               }
-                <TableRow>
-                    { this.state.card && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}} >카드 : {this.state.card}</TableCell> : ''}
-                    { this.state.cash && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>현금 : {this.state.cash}</TableCell> : ''}
-                    { this.state.account && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>계좌 : {this.state.account}</TableCell> : ''}
-                    { this.state.total && this.state.position === 'owner' ? <TableCell style={{fontSize:28,textAlign:'center'}}>총 금액 : {this.state.total}</TableCell> : ''} 
-                
-                  <TableCell>
-                    <TextField  label="지출" type="text" name="spend" value={this.state.spend}  onChange={this.handleValueChange}/>
-                  </TableCell>
-                  <TableCell>
-                    <TextField  label="입금" type="text" name="take" value={this.state.take}  onChange={this.handleValueChange}/>
-                  </TableCell>
-                  <TableCell>
-                    <TextField  label="잔금" type="text" name="balance" value={this.state.balance}  onChange={this.handleValueChange}/>
-                  </TableCell>
-                  <TableCell>
-                    <Button  className={classes.mgr20} variant="contained" color="primary" onClick={this.handleCalcSubmit}>
-                      저장
-                    </Button>
-                  </TableCell>
-                </TableRow>
           </TableBody>
         </Table>
       </Paper>

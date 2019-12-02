@@ -52,7 +52,7 @@ app.get('/api/customers/:id', (req, res) =>{
 //고객 수정
 app.put('/api/customers/:id', (req, res)=>{
     let sql = `UPDATE CUSTOMER SET name=?, contents=?, phone=?, email=?, price=?, payment=?,note=?, admin_id=? WHERE customer_seq = ${req.params.id}`;
-    let url = 'http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000'
+    let url = 'http://ec2-54-180-113-217.ap-northeast-2.compute.amazonaws.com:5000'
     // let image = req.body.image === 'null'? `${url}/image/default.jpg` : `${url}/image/` + req.file.filename ; // null 이 문자열로 넘어오네.. 이거때매 안됫었네
     let name = req.body.name;
     let contents = req.body.contents;
@@ -74,7 +74,7 @@ app.put('/api/customers/:id', (req, res)=>{
 //고객 등록
 app.post('/api/customers', (req, res)=>{
     let sql = `INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, DATE_FORMAT(NOW(), "%y-%c-%e"), 0)`;
-    // let url = 'http://ec2-15-164-215-33.ap-northeast-2.compute.amazonaws.com:5000'
+    // let url = 'http://ec2-54-180-113-217.ap-northeast-2.compute.amazonaws.com:5000'
     // let image = req.body.image === 'null'? `${url}/image/default.jpg` : `${url}/image/` + req.file.filename ; // null 이 문자열로 넘어오네.. 이거때매 안됫었네
     console.log(req.body.emailChoice)
     let name = req.body.name;
@@ -136,26 +136,27 @@ app.post('/api/signup', (req, res)=>{
     )
 })
 
-//
-app.get('/api/calculate/:id', (req, res)=>{
-    let sql = 'UPDATE CUSTOMER SET created_date WHERE id = ?';
-    let params = [req.params.id];
+// 수정?
+// app.get('/api/calculate/:id', (req, res)=>{
+//     let sql = 'UPDATE CUSTOMER SET created_date WHERE id = ?';
+//     let params = [req.params.id];
 
-    connection.query(sql, params,
-        (err, rows, fields)=>{
-            res.send(rows)
-            console.log(rows)
-        }
-    )
-})
+//     connection.query(sql, params,
+//         (err, rows, fields)=>{
+//             res.send(rows)
+//         }
+//     )
+
+// })
 
 //serachCalc 정산조회하기
 app.get('/api/calculate', (req, res)=>{
-    let sql = 'SELECT * FROM CALCULATE WHERE created_date = ? ';
+    let sql = 'SELECT * FROM CALCULATE WHERE created_date = ? AND admin_id = ? ';
     let selectedDate = req.query.selectedDate
+    let adminId = req.query.adminId
 
     
-    let params = [selectedDate];
+    let params = [selectedDate , adminId];
     connection.query(sql, params,
         (err, rows, fields)=>{
             res.send(rows)
