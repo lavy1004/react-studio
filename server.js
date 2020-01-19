@@ -25,12 +25,20 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-const multer = require('multer')
+const multer = require('multer') // 이미지업로드를 위해 사용함
 // const upload = multer({dest: './upload'})
 
 
-app.get('/', (req, res) => {
-    res.send({message: 'hello'})
+app.get('/data', (req, res) => {
+    // res.header("Access-Control-Allow-Origin", "*");
+    let sql = 'SELECT * FROM help_topic'
+    connection.query(
+        sql,
+        (err, rows, fields) => {
+            res.send(rows)
+        }
+    )
+    
 })
 
 //로그인

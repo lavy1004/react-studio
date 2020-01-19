@@ -26,7 +26,6 @@ class Home extends Component {
     this.setState({
         logged: false
     });
-
     window.sessionStorage.clear();
   }
 
